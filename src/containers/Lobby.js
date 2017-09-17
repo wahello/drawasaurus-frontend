@@ -61,7 +61,7 @@ class Lobby extends Component {
     @action onDisconnect = () => {
         const { uiStore } = this.props.rootStore;
         uiStore.connecting = true;
-        uiStore.lobbyRooms.length = 0;
+        uiStore.lobbyRooms = null;
         uiStore.onlinePlayers = 1;
     }
 

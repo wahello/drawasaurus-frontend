@@ -27,17 +27,17 @@ class RoomList extends Component {
         const { uiStore } = this.props.rootStore;
         return (
             <div className="c-lobby-rooms u-flex-columns u-flex-center-all u-no-select">
-                {uiStore.connecting &&
+                {( uiStore.connecting || uiStore.lobbyRooms === null ) &&
                     <div className="c-spinner" />
                 }
-                {(!uiStore.connecting && uiStore.lobbyRooms.length === 0) &&
+                {(!uiStore.connecting && uiStore.lobbyRooms !== null && uiStore.lobbyRooms.length === 0) &&
                     <span className="c-lobby-rooms__none">
                         No rooms are open, create one above
                         <br />
                         and use the link to invite other players!
                     </span>
                 }
-                {uiStore.lobbyRooms.map( room => (
+                {uiStore.lobbyRooms !== null && uiStore.lobbyRooms.map( room => (
                     <RoomButton loadRoom={this.loadRoom} key={room.n} name={room.n} status={room.s} currentPlayers={room.c} maxPlayers={room.m} />
                 ) )}
             </div>

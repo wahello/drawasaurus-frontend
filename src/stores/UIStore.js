@@ -6,7 +6,7 @@ class UIStore {
     @observable requireLogin = false;
     @observable currentUsername = null;
     @observable onlinePlayers = 1;
-    @observable lobbyRooms = [];
+    @observable lobbyRooms = null;
     @observable modal = {
         visible: false,
         element: null

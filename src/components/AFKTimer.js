@@ -124,6 +124,7 @@ class AFKTimer extends Component {
             if( this.lobbyDisconnect ) {
                 this.lobbyDisconnect = false;
                 socket.connect();
+                socket.emit( 'requestLobby' );
             }
         }
     }

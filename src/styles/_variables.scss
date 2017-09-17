@@ -1,0 +1,92 @@
+//COLORS
+$white: #fff;
+$black: #000;
+$color-light: #f7f7f7;
+$color-gray: #757575;
+$color-dark: #212121;
+$color-purple: #9c27b0;
+$color-green: #4caf50;
+$color-pink: #ec407a;
+
+//BACKGROUNDS
+$background-body: $color-light;
+$background-header: $color-purple;
+$background-chat: $white;
+$background-modal: rgba( $black, .75 );
+$background-canvas-controls: rgba( 245, 245, 245, .9 );
+
+$bbc1: lighten( $color-gray, 40% );
+$bbc2: rgba( $color-purple, .4 );
+$background-behind-canvas: linear-gradient( $bbc1 30px, $bbc2 50%, $bbc1 100% );
+$background-behind-canvas-portrait: linear-gradient( to right, $bbc1 0, $bbc2 50%, $bbc1 100% );
+
+//BORDER COLOURS
+$color-border: #e0e0e0;
+$color-border-header: darken( $color-purple, 3% );
+
+//TEXT COLOURS
+$color-text: $color-dark;
+$color-text-light: #7b7b7b;
+$color-text-notification: #757575;
+$color-text-header: $white;
+
+//FONTS
+$font-main: 'Roboto';
+$font-logo: 'Passion One';
+$font-buttons: 'Roboto Condensed';
+
+//HEADER BUTTONS
+//Background
+$background-header-button: darken( $background-header, 1% );
+$background-header-button-active: darken( $background-header, 5% );
+//Border
+$border-button-header: 1px solid rgba( lighten( $background-header, 4% ), .65 );
+//Shadows
+$shadow-button-header-left: 1px 0 2px rgba( $black, .06 );
+$shadow-button-header-right: -1px 0 2px rgba( $black, .06 );
+$shadow-button-header-left-active: inset -1px 0 2px rgba( $black, .08 );
+$shadow-button-header-right-active: inset 1px 0 2px rgba( $black, .08 );
+
+//MEDIA QUERY BREAKPOINTS
+$breakpoint-small-phone: 350px;
+$breakpoint-tablet: 700px;
+$breakpoint-desktop: 1000px;
+
+//MISC
+$border-radius: 4px;
+
+@mixin small-phone {
+  @media ( max-width: #{$breakpoint-small-phone} ) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media ( min-width: #{$breakpoint-tablet} ) and ( max-width: #{$breakpoint-desktop - 1px} ) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media ( min-width: #{$breakpoint-desktop} ) {
+    @content;
+  }
+}
+
+@mixin tablet-desktop {
+  @media ( min-width: #{$breakpoint-tablet} ) {
+    @content;
+  }
+}
+
+@mixin max-width( $s ) {
+  @media ( max-width: #{$s} ) {
+    @content;
+  }
+}
+
+@mixin min-width( $s ) {
+  @media ( min-width: #{$s} ) {
+    @content;
+  }
+}

@@ -1,0 +1,580 @@
+@import 'variables';
+
+//Flex item between Header and Footer
+.l-room {
+  box-sizing: border-box;
+  flex: auto;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding: 5px;
+
+  &.is-portrait {
+    .l-board {
+      flex-direction: column;
+    }
+
+    .l-sidebar {
+      flex-direction: row-reverse;
+      height: 0;
+      max-width: none;
+    }
+
+    .l-canvas {
+      align-items: center;
+      background: $background-behind-canvas-portrait;
+    }
+
+    .c-chat {
+      border: 1px solid $color-border;
+      border-radius: 0 0 $border-radius $border-radius;
+      border-top: 0;
+      margin: 0;
+      margin-left: 5px;
+      max-width: none;
+
+      &--no-users {
+        margin-right: 5px;
+      }
+    }
+
+    .c-users {
+      align-items: stretch;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      max-height: none;
+      max-width: 42%;
+      min-width: 100px;
+
+      &__user {
+        flex: none;
+        min-width: 100px;
+      }
+    }
+
+    .c-user {
+      flex: initial;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.c-room-error {
+  background: rgba( $black, .6 );
+  bottom: 0;
+  font-size: 32px;
+  left: 0;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity .2s;
+  z-index: 996;
+
+  &--hidden {
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &__window {
+    background: $color-purple;
+    box-sizing: border-box;
+    color: $color-text-header;
+    font-family: $font-buttons;
+    font-weight: 700;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+
+    &--afk {
+      flex-direction: column;
+    }
+  }
+
+  &__text {
+    font-size: 1.15em;
+    margin: 0 5px;
+  }
+
+  &__button {
+    cursor: pointer;
+
+    &--afk {
+      font-size: 1.5em;
+      margin-top: 10px;
+    }
+  }
+}
+
+.l-board {
+  flex: auto;
+  font-size: 12.5px;
+  justify-content: center;
+  transition: opacity 1s ease;
+  width: 100%;
+
+  @include small-phone {
+    font-size: 12px;
+  }
+
+  @include tablet {
+    font-size: 13px;
+  }
+
+  @include desktop {
+    font-size: 13px;
+  }
+
+  @media ( max-height: 500px ) {
+    font-size: 12px;
+  }
+}
+
+.l-canvas {
+  background: $background-behind-canvas;
+  border-radius: $border-radius;
+  border-top: 0;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.c-canvas-header {
+  background: $color-purple;
+  border-radius: $border-radius $border-radius 0 0;
+  box-sizing: border-box;
+  color: $white;
+  font-size: 1.1em;
+  font-weight: 300;
+  padding: .6em;
+  text-align: center;
+  width: 100%;
+}
+
+.u-blanks {
+  letter-spacing: 5px;
+  margin-left: 5px;
+}
+
+.u-bold {
+  font-weight: 700;
+}
+
+//Wrapper for positioning the cursor
+.l-canvas-cursor {
+  line-height: 0;
+  margin: auto 0;
+  position: relative;
+}
+
+.c-canvas {
+  background: $white;
+  border: 1px solid $color-border;
+  border-radius: $border-radius;
+  margin: auto 0;
+  touch-action: none;
+  transition: opacity .1s;
+}
+
+.c-canvas-controls {
+  $s: &;
+  bottom: 0;
+  font-size: 13px;
+  left: 0;
+  margin: .5em;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity .2s;
+  z-index: 99;
+
+  @include small-phone {
+    font-size: 11px;
+  }
+
+  @include tablet {
+    font-size: 13px;
+  }
+
+  @include desktop {
+    font-size: 15px;
+  }
+
+  @media ( max-height: 450px ) {
+    font-size: 11px;
+  }
+
+  //Converted these values to variables as they are used for absolute positioning below
+  $button-padding: .25em;
+  $button-size: 2.2em;
+  $button-palette-size: 2.5em;
+  $button-margin: .25em;
+  $button-palette-margin: .175em;
+  $label-size: .8em;
+  $label-margin: .4em;
+
+  &__category {
+    background: $background-canvas-controls;
+    border: 1px solid $color-border;
+    border-radius: $border-radius;
+    bottom: 0;
+    opacity: 1;
+    padding: $button-padding;
+    position: absolute;
+    transition: opacity .2s;
+
+    &--left {
+      left: 0;
+    }
+
+    &--right {
+      right: 0;
+    }
+
+    //Positioning the pickers using em values
+    &--above {
+      bottom: ( $button-margin * 2 + $button-padding * 2 + $label-size + $label-margin + $button-size + $button-margin * 2 );
+    }
+
+    $buttons-per-line: 6;
+
+    &--palette {
+      flex-wrap: wrap;
+      width: ( $button-palette-size * $buttons-per-line ) + ( $button-palette-margin * ( $buttons-per-line * 2 ) ) + .1em;
+    }
+  }
+
+  &__option {
+    cursor: pointer;
+    margin: $button-margin;
+    pointer-events: auto;
+    touch-action: none;
+
+    &--disabled {
+      cursor: default;
+      opacity: .5;
+    }
+  }
+
+  &__button {
+    background: $white;
+    border: 1px solid rgba( $color-purple, .3 );
+    border-radius: 50%;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: $button-size;
+    pointer-events: auto;
+    width: $button-size;
+
+    &--active {
+      border: 2px solid $color-purple;
+    }
+
+    &--disabled {
+      cursor: default;
+    }
+
+    &--picker {
+      height: $button-palette-size;
+      margin: $button-palette-margin;
+      width: $button-palette-size;
+    }
+
+    &--size {
+      margin: $button-palette-margin;
+    }
+  }
+
+  &__label {
+    font-size: $label-size;
+    letter-spacing: .05em;
+    margin-top: $label-margin;
+  }
+
+  &__icon {
+    color: $color-purple;
+    font-size: 1.3em;
+  }
+}
+
+.c-size {
+  background: $color-purple;
+  border-radius: 50%;
+
+  @for $i from 1 through 20 {
+    &--#{$i} {
+      height: $i + 1 + px;
+      width: $i + 1 + px;
+    }
+  }
+}
+
+.c-canvas-overlay {
+  border-radius: $border-radius;
+  bottom: 0;
+  left: 0;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  touch-action: none;
+  transition: opacity .2;
+  z-index: 99;
+
+  &__window {
+    background: rgba( $white, .8 );
+    border-radius: $border-radius;
+    padding: 20px;
+  }
+
+  &__title {
+    font-family: $font-logo;
+    font-size: 2.2em;
+    letter-spacing: .03em;
+  }
+
+  &__inner {
+    flex-wrap: wrap;
+    font-size: 1.5em;
+  }
+
+  &__word {
+    background: $color-green;
+    border-radius: $border-radius;
+    box-shadow: inset 0 -2px 0 darken( $color-green, 5% );
+    color: $color-text-header;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: .05em;
+    margin: 5px;
+    padding: .5em;
+    pointer-events: auto;
+    touch-action: none;
+
+    &:active {
+      background: darken( $color-green, 5% );
+      box-shadow: inset 0 2px 0 darken( $color-green, 10% );
+      margin-top: 6px;
+      padding-bottom: calc( .5em - 1px );
+    }
+  }
+}
+
+$s: 2em;
+
+.c-canvas-timer {
+  background: $color-green;
+  border-radius: 50%;
+  color: $white;
+  font-size: 1.4em;
+  font-weight: 700;
+  height: $s;
+  opacity: .9;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity .2s;
+  width: $s;
+  z-index: 995;
+
+  &--centered {
+    border: .1em solid $white;
+    font-size: 3.8em;
+    height: 1.8em;
+    opacity: 1;
+    position: relative;
+    width: 1.8em;
+  }
+}
+
+.c-canvas-cursor {
+  border: 1px solid rgba( $black, .6 );
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba( $black, .2 );
+  box-sizing: border-box;
+  height: 10px;
+  left: 0;
+  opacity: .6;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 10px;
+  z-index: 99;
+
+  &--black {
+    border: 1px solid rgba( $white, .6 );
+  }
+}
+
+.l-sidebar {
+  flex-grow: 1;
+  max-width: 220px;
+  width: 100%;
+}
+
+.c-chat {
+  background: $background-chat;
+  border: 1px solid $color-border;
+  border-left: 0;
+  border-radius: 0 $border-radius $border-radius 0;
+  flex: 1 1;
+  margin-bottom: 5px;
+
+  @include small-phone {
+    font-size: .9em;
+  }
+
+  &--no-users {
+    margin-top: 5px;
+  }
+
+  &__buffer {
+    flex-grow: 1;
+    height: 0;
+    overflow-y: auto;
+    word-wrap: break-word;
+  }
+
+  &__box {
+    border-top: 1px solid $color-border;
+    padding: 5px;
+  }
+
+  &__input {
+    background: $white;
+    border: 1px solid rgba( $black, .2 );
+    border-radius: $border-radius / 2;
+    box-sizing: border-box;
+    font-family: $font-main;
+    font-weight: 300;
+    padding: 5px;
+    width: 100%;
+  }
+}
+
+.c-chat-message {
+  border-bottom: 1px solid rgba( $black, .05 );
+  flex: none;
+  line-height: 1.4;
+  padding: 8px;
+  word-break: break-word;
+
+  &--notification {
+    color: $color-text-notification;
+    font-size: .85em;
+    padding: 6px;
+  }
+
+  &__name {
+    font-weight: 700;
+  }
+
+  &__icon {
+    color: $color-purple;
+    flex-shrink: 0;
+    margin-left: -2px;
+    margin-right: 2px;
+    text-align: center;
+  }
+
+  &__notification {
+    a {
+      border-bottom: 1px solid rgba( $color-purple, .75 );
+      color: $color-purple;
+      text-decoration: none;
+    }
+  }
+}
+
+.c-scoreboard {
+  background: rgba( $white, .8 );
+  border-radius: $border-radius;
+  box-sizing: border-box;
+  font-size: .9em;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+  pointer-events: all;
+
+  &__heading {
+    font-family: $font-logo;
+    font-size: 2.6em;
+    margin: auto;
+  }
+
+  &__user {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin-top: .5em;
+    padding: .6em;
+    width: 16em;
+
+    &--winner {
+      background: $color-purple;
+      border-radius: $border-radius;
+      box-shadow: inset 0 -2px 0 darken( $color-purple, 5% );
+      color: $white;
+    }
+  }
+
+  &__name {
+    flex-grow: 1;
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  &__score {
+    font-size: 1.4em;
+    font-weight: 700;
+  }
+}
+
+.c-users {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  max-height: 50%;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: .3em;
+
+  @include small-phone {
+    font-size: .95em;
+  }
+
+  &__user {
+    align-items: baseline;
+    background: $white;
+    border: 1px solid $color-border;
+    border-radius: $border-radius;
+    box-shadow: 0 1px 0 rgba( $color-border, .3 );
+    box-sizing: border-box;
+    color: $color-text-light;
+    flex: 1 0 35%;
+    margin: .25em .2em;
+    padding: .6em .7em;
+    transition: border .5s, color .2s;
+
+    &--drawing {
+      border: 1px solid rgba( $color-purple, .6 );
+      color: $color-text;
+    }
+
+    &--guessed {
+      border: 1px solid rgba( $color-green, .6 );
+      color: $color-text;
+    }
+  }
+
+  &__name {
+    flex: 1 0;
+    padding-right: 5px;
+  }
+
+  &__score {
+    font-size: .9em;
+    font-weight: 300;
+  }
+}

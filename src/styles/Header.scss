@@ -1,0 +1,106 @@
+@import 'variables';
+
+.u-header-item {
+  background: $background-header-button;
+  cursor: pointer;
+  padding: 7px 8px;
+
+  @include small-phone {
+    padding: 6px;
+  }
+
+  @include tablet-desktop {
+    padding: 10px;
+  }
+
+  &:active {
+    background: $background-header-button-active;
+  }
+
+  &--left {
+    border-right: $border-button-header;
+    box-shadow: $shadow-button-header-left;
+
+    &:active {
+      box-shadow: $shadow-button-header-left-active;
+    }
+  }
+
+  &--right {
+    border-left: $border-button-header;
+    box-shadow: $shadow-button-header-right;
+
+    &:active {
+      box-shadow: $shadow-button-header-right-active;
+    }
+  }
+}
+
+.c-logo {
+  height: 1em;
+  width: 1em;
+}
+
+.c-header {
+  background-color: $background-header;
+  color: $color-text-header;
+  flex: none;
+  font-size: 21px;
+
+  @include small-phone {
+    font-size: 20px;
+  }
+
+  @include tablet {
+    font-size: 23px;
+  }
+
+  @include desktop {
+    font-size: 24px;
+  }
+
+  @media ( max-height: 500px ) {
+    font-size: 20px;
+  }
+
+  &__home {
+    color: $color-text-header;
+    font-family: $font-logo;
+    text-decoration: none;
+  }
+
+  &__sitename {
+    letter-spacing: .5px;
+    margin-left: 5px;
+    padding-top: 1px;
+  }
+
+  &__roomname {
+    font-family: $font-logo;
+    font-size: .85em;
+    margin: 0;
+  }
+
+  &__roomstatus {
+    font-size: .45em;
+    font-weight: 300;
+    margin: 0;
+    margin-top: -2px;
+    opacity: .8;
+  }
+
+  &__user {
+    margin-left: auto;
+  }
+
+  &__usericon {
+    font-size: .6em;
+    margin: 0 -3px;
+  }
+
+  &__username {
+    font-size: .6em;
+    font-weight: 700;
+    margin-left: 5px;
+  }
+}

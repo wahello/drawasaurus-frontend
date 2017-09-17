@@ -1,0 +1,22 @@
+@import 'variables';
+
+//Spinner
+//https://codepen.io/6twenty/pen/tjpDr
+.c-spinner {
+  animation: spin 1s linear infinite;
+  border: .1em solid rgba( $black, .15 );
+  border-radius: .5em;
+  border-top-color: $color-purple;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 24px;
+  height: 1em;
+  margin: 20px;
+  width: 1em;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate( 360deg );
+  }
+}

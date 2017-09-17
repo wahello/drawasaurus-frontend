@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# production
+/build
+/build_final
+/server
+/raw
+
+# misc
+.DS_Store
+npm-debug.log
+Procfile

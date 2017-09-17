@@ -1,0 +1,96 @@
+@import 'variables';
+
+html,
+body,
+.root,
+.c-app {
+  height: 100%;
+  width: 100%;
+}
+
+p,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+button:focus {
+  outline: 0;
+}
+
+.c-app {
+  background-color: $background-body;
+  background-image: url( '../images/bg.jpg' );
+  color: $color-text;
+  font-family: $font-main;
+}
+
+.c-footer {
+  color: $color-text;
+  flex: none;
+  max-height: 150px;
+  overflow: hidden;
+  text-align: center;
+
+  &__blocked {
+    background: rgba( $black, .1 );
+    box-sizing: border-box;
+    font-size: .85em;
+    height: 45px;
+    line-height: 1.2em;
+    margin: auto;
+    opacity: .6;
+    padding: 5px;
+
+    @include small-phone {
+      font-size: .8em;
+    }
+
+    @include tablet-desktop {
+      font-size: .9em;
+    }
+
+    .icon-heart {
+      color: $color-pink;
+      margin-left: .2em;
+    }
+  }
+}
+
+.u-flex {
+  display: flex;
+}
+
+.u-flex-columns {
+  display: flex;
+  flex-direction: column;
+}
+
+.u-flex-center {
+  align-items: center;
+  display: flex;
+}
+
+.u-flex-center-all {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.u-hidden {
+  opacity: 0;
+}
+
+.u-display-none {
+  display: none;
+}
+
+.u-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.u-no-select {
+  user-select: none;
+}

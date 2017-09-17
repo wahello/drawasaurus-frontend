@@ -1,0 +1,18 @@
+<svg width="257" height="257" viewBox="0 0 257 257" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>logo</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-11748 -131)">
+<g id="logo">
+<g id="Rectangle">
+<use xlink:href="#path0_fill" transform="translate(11748.3 131.007)" fill="#FFFFFF"/>
+</g>
+<g id="D">
+<use xlink:href="#path1_fill" transform="translate(11780.8 149.774)" fill="#9C27B0"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 0 10C 0 4.47715 4.47715 0 10 0L 246 0C 251.523 0 256 4.47715 256 10L 256 246C 256 251.523 251.523 256 246 256L 10 256C 4.47715 256 0 251.523 0 246L 0 10Z"/>
+<path id="path1_fill" d="M 178.035 146.476C 150.771 210.593 111.809 231.88 61.1487 210.338L 0 184.337L 78.3839 0L 140.72 26.5066C 167.831 38.0349 183.787 53.8161 188.587 73.8503C 193.67 93.7707 190.153 117.979 178.035 146.476ZM 78.4341 167.215C 88.9224 171.675 97.2075 170.875 103.289 164.815C 109.653 158.641 116.538 146.847 123.943 129.433C 131.432 111.821 135.051 98.6381 134.8 89.8856C 134.748 81.2172 129.378 74.611 118.692 70.067L 109.787 66.2803L 68.6385 163.05L 78.4341 167.215Z"/>
+</defs>
+</svg>

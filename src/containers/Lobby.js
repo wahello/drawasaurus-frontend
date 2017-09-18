@@ -20,7 +20,7 @@ export const getRoomURL = ( name ) => {
 const Announcement = ( props ) => (
     <div className="c-announcement">
         <p className="c-announcement__text">
-            Drawasaurus has been updated to a new framework which should make future updates quicker and easier! If you're encountering any weird errors or bugs, please email <a href='mailto:drawasaurusgame@gmail.com'>drawasaurusgame@gmail.com</a>
+            Drawasaurus has been updated to a new framework which should make updates quicker and easier! If you want to report a bug or suggest a feature, please email <a href='mailto:drawasaurusgame@gmail.com'>drawasaurusgame@gmail.com</a>
         </p>
     </div>
 )
@@ -29,7 +29,7 @@ const Announcement = ( props ) => (
 class OnlinePlayers extends Component {
     render() {
         const { uiStore } = this.props.rootStore;
-        if ( uiStore.connecting ) {
+        if ( uiStore.connecting || uiStore.lobbyRooms === null ) {
             return <span className="c-lobby-header__players">Loading rooms...</span>;
         } else {
             return (

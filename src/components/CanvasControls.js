@@ -210,7 +210,6 @@ class CanvasOverlay extends Component {
     @action toggleCanvasWindow = ( window ) => {
         const { roomStore } = this.props.rootStore;
         if( window && roomStore.canvasWindow !== window ) {
-            console.log( window );
             roomStore.canvasWindow = window;
         } else {
             roomStore.canvasWindow = 0;

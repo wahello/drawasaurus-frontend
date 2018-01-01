@@ -3,7 +3,17 @@
         "target": "ES6",
         "module": "commonjs",
         "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "*",
+                "src/*",
+                "src/components/*",
+                "src/containers/*",
+                "src/stores/*"
+            ]
+        }
     },
     "exclude": [
         "build",

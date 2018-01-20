@@ -259,15 +259,17 @@ class Canvas extends Component {
                 let lastLine = this.pendingLines.lines[ this.pendingLines.lines.length - 1 ];
                 let line = lines[0];
                 if( lastLine ) {
+                    const { multWidthReverse, multHeightReverse } = canvasStore;
+
                     let x1 = lastLine[0];
                     let y1 = lastLine[1];
                     let x2 = line[0];
                     let y2 = line[1];
 
-                    let a = x1 - x2;
-                    let b = y1 - y2;
+                    let a = ( x1 - x2 ) * multWidthReverse;
+                    let b = ( y1 - y2 ) * multHeightReverse;
                     let distance = Math.sqrt( a*a + b*b );
-                    if( distance <= 5 ) {
+                    if( distance <= 2 ) {
                         return;
                     }
                 }

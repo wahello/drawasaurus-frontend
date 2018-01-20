@@ -130,6 +130,7 @@ class PaletteWindow extends Component {
 
         if( this.props.brush ) {
             canvasStore.brushColour = colour;
+            canvasStore.eraserEnabled = false;
         } else if( this.props.fill ) {
             canvasStore.fillColour = colour;
             

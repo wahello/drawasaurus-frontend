@@ -20,6 +20,10 @@ class Canvas extends Component {
         this.currentCanvas = [];
         this.drawnCanvas = 0;
         this.undoHistory = [];
+
+        this.pendingLines = {
+            lines: []
+        };
     }
 
     componentWillMount() {
@@ -56,6 +60,21 @@ class Canvas extends Component {
             this.drawLine( line );
         }
         raf( this.drawLoop );
+    }
+
+    @action sendPendingLines = () => {
+        if( this.pendingLines.lines.length === 0 ) return;
+
+        const { socket } = this.props;
+        const { canvasStore } = this.props.rootStore;
+
+        socket.emit( 'drawLine', this.pendingLines );
+        this.currentCanvas.push( this.pendingLines );
+        this.pendingLines = { lines: [] };
+
+        //Update undo history
+        this.undoHistory[ this.undoHistory.length - 1 ] += 1;
+        canvasStore.undoValue = this.undoHistory[ this.undoHistory.length - 1 ];
     }
 
     //Receive canvas array (in JSON) from server and draw
@@ -139,44 +158,6 @@ class Canvas extends Component {
         this.currentCanvas.push( line );
     }
 
-    //Send line to server, queue to draw
-    drawLineClient = ( line ) => {
-        const { socket } = this.props;
-
-        this.currentCanvas.push( line );
-        socket.emit( 'drawLine', line );
-    }
-
-    //Use line object to draw on the canvas
-    drawLine = ( line ) => {
-        if( !line ) return;
-
-        const { canvasStore } = this.props.rootStore;
-        const { multWidth, multHeight } = canvasStore;
-        let context = this.canvas.getContext( '2d' );
-        
-        context.lineJoin = 'round';
-        context.lineCap = 'round';
-        context.strokeStyle = line.colour;
-        //Scale line thickness with canvas size
-        context.lineWidth = Math.round( line.thick * multWidth );
-        context.beginPath();
-
-        let x2 = Math.round( line.to.x * multWidth );
-        let y2 = Math.round( line.to.y * multHeight );
-
-        if( line.from ) {
-            let x1 = Math.round( line.from.x * multWidth );
-            let y1 = Math.round( line.from.y * multHeight );
-            context.moveTo( x1, y1 ); 
-        } else {
-            context.moveTo( x2-1, y2 ); 
-        }
-        
-        context.lineTo( x2, y2 );
-        context.stroke();
-    }
-
     //Create line from mouse movement
     getLineFromEvent = ( e, mouseMove ) => {
         const { canvasStore } = this.props.rootStore;
@@ -187,43 +168,118 @@ class Canvas extends Component {
         pos[ 0 ] *= multWidthReverse;
         pos[ 1 ] *= multHeightReverse;
 
-        let thick = canvasStore.brushSize;
-        if( canvasStore.eraserEnabled ) {
-            thick += ERASER_EXTRA;
-        }
-
         let point = { x: pos[ 0 ], y: pos[ 1 ] };
         point.x = Math.round( point.x );
         point.y = Math.round( point.y );
 
-        let line = {};
+        let lines = [];
         if ( !mouseMove || this.mouseOutside ) {
-            line = { from: null, to: point, colour: canvasStore.cursorColour, thick: thick };
+            lines = [ [ point.x, point.y ] ];
             if( this.mouseOutside ) {
                 this.mouseOutside = false;
             }
         } else {
-            line = { from: this.lastPoint, to: point, colour: canvasStore.cursorColour, thick: thick  };
+            lines = [ [ this.lastPoint.x, this.lastPoint.y ], [ point.x, point.y ] ];
         }
 
         this.lastPoint = point;
 
-        return line;
+        return lines;
+    }
+
+    //New drawing method with line smoothing
+    drawLine = ( pending ) => {
+        if( !pending ) return;
+
+        const { canvasStore } = this.props.rootStore;
+        const { multWidth, multHeight } = canvasStore;
+        let context = this.canvas.getContext( '2d' );
+        
+        context.lineJoin = 'round';
+        context.lineCap = 'round';
+        context.strokeStyle = pending.colour;
+        //Scale line thickness with canvas size
+        context.lineWidth = Math.round( pending.thick * multWidth );
+        context.beginPath();
+
+        let lines = pending.lines;
+        let startX = lines[0][0] * multWidth;
+        let startY = lines[0][1] * multHeight;
+        context.moveTo(startX, startY);
+
+        if( lines.length === 1 ) {
+            context.lineTo( startX-1, startY );
+        }
+
+        for( var i = 1; i < lines.length - 2; i++ ) {
+            let nextLine = lines[i + 1];
+            let x1 = lines[i][0] * multWidth;
+            let y1 = lines[i][1] * multHeight;
+            let x2 = nextLine[0] * multWidth;
+            let y2 = nextLine[1] * multHeight;
+
+            let xc = (x1 + x2) / 2;
+            let yc = (y1 + y2) / 2;
+
+            context.quadraticCurveTo(x1, y1, xc, yc);
+        }
+
+        if( lines.length > 2 ) {
+            let lastLine = lines[i + 1];
+            let x1 = lines[i][0] * multWidth;
+            let y1 = lines[i][1] * multHeight;
+            let x2 = lastLine[0] * multWidth;
+            let y2 = lastLine[1] * multHeight;
+
+            context.quadraticCurveTo(x1, y1, x2, y2);
+        }
+        
+        context.stroke();
     }
     
     @action mouseDraw = ( e, newMove ) => {
         const { roomStore, canvasStore } = this.props.rootStore;
         this.moveCursor( e, true );
         if( roomStore.currentDrawer && this.mouseDrawing ) {
-            let line = this.getLineFromEvent( e, !newMove );
+            let lines = this.getLineFromEvent( e, !newMove );
 
             if( newMove ) {
-                this.undoHistory[ this.undoHistory.length ] =0;
+                this.undoHistory.push( 0 );
+                this.pendingLines.lines = [];
             }
-            this.undoHistory[ this.undoHistory.length - 1 ]++;
-            canvasStore.undoValue = this.undoHistory[ this.undoHistory.length - 1 ];
 
-            this.drawLineClient( line );
+            if( this.pendingLines.lines.length === 0 ) {
+                let thick = canvasStore.brushSize;
+                if( canvasStore.eraserEnabled ) {
+                    thick += ERASER_EXTRA;
+                }
+                this.pendingLines.colour = canvasStore.cursorColour;
+                this.pendingLines.thick = thick;
+            } else {
+                let lastLine = this.pendingLines.lines[ this.pendingLines.lines.length - 1 ];
+                let line = lines[0];
+                if( lastLine ) {
+                    let x1 = lastLine[0];
+                    let y1 = lastLine[1];
+                    let x2 = line[0];
+                    let y2 = line[1];
+
+                    let a = x1 - x2;
+                    let b = y1 - y2;
+                    let distance = Math.sqrt( a*a + b*b );
+                    if( distance <= 5 ) {
+                        return;
+                    }
+                }
+            }
+
+            for( let i = 0; i < lines.length; i++ ) {
+                this.pendingLines.lines.push( lines[i] );
+            }
+
+            if( this.pendingLines.lines.length >= 3 ) {
+                this.sendPendingLines();
+            }            
         }
     }
 
@@ -247,6 +303,7 @@ class Canvas extends Component {
 
     onMouseUp = ( e ) => {
         this.mouseDrawing = false;
+        this.sendPendingLines();
     }
 
     onMouseUpOutside = ( e ) => {
@@ -263,7 +320,7 @@ class Canvas extends Component {
         if ( !this.cursorWait ) {
             this.cursorWait = true;
             this.mouseDraw( e, false );
-            setTimeout( () => { this.cursorWait = false; }, 20 );
+            setTimeout( () => { this.cursorWait = false; }, 8 );
         }
     }
 

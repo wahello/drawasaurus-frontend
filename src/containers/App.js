@@ -16,7 +16,7 @@ import 'styles/App.scss';
 
 let connection = 'https://' + window.location.hostname;
 if( window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ) {
-  connection += ':8001';
+  connection += ':8000';
 }
 const socket = io( connection, { transports: ['websocket'], upgrade: false, secure: true } );
 
@@ -30,6 +30,10 @@ class App extends Component {
     socket.on( 'existingUsername', this.setUsername );
     socket.on('requestUsername', () => uiStore.showModal( <LoginWindow /> ) );
     socket.on( 'setUsername', this.setUsername );
+
+    socket.on( 'setSession', ( id ) => {
+        Cookies.set( 'session', id, { secure: true } );
+    });
   }
   
   @action onConnect = () => {
@@ -47,10 +51,10 @@ class App extends Component {
 
     if( forcedBecauseDuplicate ) {
       if( typeof requested === 'string' ) {
-        Cookies.set( 'username', requested, { expires: 365 } );
+        Cookies.set( 'username', requested, { expires: 365, secure: true } );
       }
     } else {
-      Cookies.set( 'username', username, { expires: 365 } );
+      Cookies.set( 'username', username, { expires: 365, secure: true } );
     }
 
     uiStore.currentUsername = username;

@@ -245,7 +245,6 @@ class Canvas extends Component {
 
             if( newMove ) {
                 this.undoHistory.push( 0 );
-                this.pendingLines.lines = [];
             }
 
             if( this.pendingLines.lines.length === 0 ) {
@@ -303,11 +302,6 @@ class Canvas extends Component {
         }
     }
 
-    onMouseUp = ( e ) => {
-        this.mouseDrawing = false;
-        this.sendPendingLines();
-    }
-
     onMouseUpOutside = ( e ) => {
         if( this.mouseDrawing && this.mouseOutside ) {
             this.mouseDrawing = false;
@@ -326,12 +320,20 @@ class Canvas extends Component {
         }
     }
 
+   
+    isTouching = false;
     //mousedown & touchstart
     onMouseTouchStart = ( e ) => {
         e.preventDefault();
         initSounds();
         const { roomStore } = this.props.rootStore;
         if ( roomStore.currentDrawer ) {
+            //Prevent mousedown firing after a quick touch tap (weird bug)
+            if( e.nativeEvent.type === 'touchstart' ) {
+                this.isTouching = true;
+            } else if( this.isTouching ) {
+                return;
+            }
             this.mouseDrawing = true;
             this.mouseDraw( e, true );
         }
@@ -344,10 +346,18 @@ class Canvas extends Component {
         canvasStore.hideCursor();
     }
 
+    onMouseUp = ( e ) => {
+        this.mouseDrawing = false;
+        this.sendPendingLines();
+    }
+
     onTouchEnd = ( e ) => {
         const { canvasStore } = this.props.rootStore;
         this.mouseDrawing = false;
         canvasStore.hideCursor();
+        this.sendPendingLines();
+        //Reset after preventing bug so users can switch between mouse & touch
+        setTimeout( () => this.isTouching = false, 0 );
     }
 
     onTouchCancel = ( e ) => {

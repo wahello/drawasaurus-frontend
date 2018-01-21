@@ -9,7 +9,6 @@ import Header from 'Header';
 import Footer from 'Footer';
 import Lobby from 'Lobby';
 import Room from 'Room';
-import Error404 from 'Error404';
 import Modal from 'Modal';
 import LoginWindow from 'modals/LoginWindow';
 import mobileDetect from 'mobile-detect';
@@ -77,9 +76,8 @@ class App extends Component {
             <Header />
           }
           <Switch>
-            <Route exact path='/' component={Lobby} />
             <Route path='/room/:name' component={Room} />
-            <Route path='*' component={Error404} />
+            <Route exact path='*' component={Lobby} />
           </Switch>
           {!roomStore.keyboardOpen &&
             <Footer />

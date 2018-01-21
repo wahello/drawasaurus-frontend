@@ -559,25 +559,33 @@ $s: 2em;
 
   &__user {
     align-items: baseline;
-    background: $white;
+    background-color: $white;
     border: 1px solid $color-border;
     border-radius: $border-radius;
     box-shadow: 0 1px 0 rgba( $color-border, .3 );
     box-sizing: border-box;
     color: $color-text-light;
     flex: 1 0 35%;
+    letter-spacing: .02em;
     margin: .25em .2em;
     padding: .6em .7em;
-    transition: border .5s, color .2s;
+    transition: border .5s, color .2s, background-color .2s;
+
+    &--drawing,
+    &--guessed {
+      font-weight: 700;
+    }
 
     &--drawing {
+      background-color: rgba( $color-purple, .85 );
       border: 1px solid rgba( $color-purple, .6 );
-      color: $color-text;
+      color: $white;
     }
 
     &--guessed {
+      background-color: rgba( $color-green, .85 );
       border: 1px solid rgba( $color-green, .6 );
-      color: $color-text;
+      color: $white;
     }
   }
 

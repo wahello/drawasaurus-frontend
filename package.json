@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "cross-env HTTPS=true NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
+    "start-insecure": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "build": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts build",
     "server": "node ./server/game",
     "test": "react-scripts test --env=jsdom",

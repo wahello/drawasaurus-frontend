@@ -14,11 +14,12 @@ import Modal from 'Modal';
 import LoginWindow from 'modals/LoginWindow';
 import 'styles/App.scss';
 
-let connection = 'https://' + window.location.hostname;
-if( window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ) {
-  connection += ':8000';
+let connection = '//' + window.location.hostname;
+const secure = ( window.location.protocol === 'https:' );
+if( window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith( '192' ) ) {
+  connection += ( secure ? ':8000' : ':7999' );
 }
-const socket = io( connection, { transports: ['websocket'], upgrade: false, secure: true } );
+const socket = io( connection, { transports: ['websocket'], upgrade: false } );
 
 @inject('rootStore') @observer
 class App extends Component {
@@ -32,7 +33,7 @@ class App extends Component {
     socket.on( 'setUsername', this.setUsername );
 
     socket.on( 'setSession', ( id ) => {
-        Cookies.set( 'session', id, { secure: true } );
+        Cookies.set( 'session', id, { secure: secure } );
     });
   }
   
@@ -51,10 +52,10 @@ class App extends Component {
 
     if( forcedBecauseDuplicate ) {
       if( typeof requested === 'string' ) {
-        Cookies.set( 'username', requested, { expires: 365, secure: true } );
+        Cookies.set( 'nickname', requested, { expires: 365, secure: secure } );
       }
     } else {
-      Cookies.set( 'username', username, { expires: 365, secure: true } );
+      Cookies.set( 'nickname', username, { expires: 365, secure: secure } );
     }
 
     uiStore.currentUsername = username;

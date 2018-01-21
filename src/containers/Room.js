@@ -411,6 +411,9 @@ class Room extends Component {
         return (
             <div className={mainClasses} ref={main => this.main = main}>
                 <RoomError />
+                {this.firstResize && 
+                    <div className="c-spinner c-spinner--room" />
+                }
                 <div className={boardClasses}>
                     <div className="l-canvas u-flex-columns">
                         <div ref={header => this.header = header} className="c-canvas-header u-no-select">

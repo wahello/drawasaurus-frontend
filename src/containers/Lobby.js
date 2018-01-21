@@ -17,14 +17,6 @@ export const getRoomURL = ( name ) => {
     return '/room/' + name;
 }
 
-const Announcement = ( props ) => (
-    <div className="c-announcement">
-        <p className="c-announcement__text">
-            Drawasaurus has been updated to a new framework which should make updates quicker and easier! If you want to report a bug or suggest a feature, please email <a href='mailto:drawasaurusgame@gmail.com'>drawasaurusgame@gmail.com</a>
-        </p>
-    </div>
-)
-
 @inject('rootStore') @observer
 class OnlinePlayers extends Component {
     render() {
@@ -100,7 +92,6 @@ class Lobby extends Component {
                     </button>
                 </div>
                 <RoomList />
-                <Announcement />
                 <AFKTimer lobby />
             </div>
         );

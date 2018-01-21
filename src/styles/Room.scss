@@ -4,6 +4,7 @@
 .l-room {
   box-sizing: border-box;
   flex: auto;
+  justify-content: center;
   overflow-x: hidden;
   overflow-y: hidden;
   padding: 5px;
@@ -109,7 +110,7 @@
   flex: auto;
   font-size: 12.5px;
   justify-content: center;
-  transition: opacity 1s ease;
+  transition: opacity .5s ease;
   width: 100%;
 
   @include small-phone {

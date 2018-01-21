@@ -13,6 +13,12 @@
   height: 1em;
   margin: 20px;
   width: 1em;
+
+  &--room {
+    align-self: center;
+    margin: 0;
+    position: absolute;
+  }
 }
 
 @keyframes spin {

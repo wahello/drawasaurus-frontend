@@ -12,6 +12,7 @@ import Room from 'Room';
 import Error404 from 'Error404';
 import Modal from 'Modal';
 import LoginWindow from 'modals/LoginWindow';
+import mobileDetect from 'mobile-detect';
 import 'styles/App.scss';
 
 let connection = '//' + window.location.hostname;
@@ -29,12 +30,17 @@ class App extends Component {
     socket.on( 'disconnect', this.onDisconnect );
     
     socket.on( 'existingUsername', this.setUsername );
-    socket.on('requestUsername', () => uiStore.showModal( <LoginWindow /> ) );
+    socket.on( 'requestUsername', () => uiStore.showModal( <LoginWindow /> ) );
     socket.on( 'setUsername', this.setUsername );
 
     socket.on( 'setSession', ( id ) => {
         Cookies.set( 'session', id, { secure: secure } );
     });
+
+    const isCrawler = new mobileDetect( window.navigator.userAgent ).is( 'Bot' );
+    if( isCrawler ) {
+      uiStore.showModal( <LoginWindow /> );
+    }
   }
   
   @action onConnect = () => {

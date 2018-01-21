@@ -52,7 +52,7 @@ class LoginForm extends Component {
                     </form>
                 </div>
                 <div className="c-login__info">
-                    <p className="c-login__desc"><strong>Drawasaurus</strong> is a drawing & guessing game for your phone and PC. 
+                    <p className="c-login__desc"><strong>Drawasaurus</strong> is a drawing & guessing game for your phone, tablet or PC. 
                     Do your best to draw the word you are given while players from around the world try to guess it!</p>
                     <div className="c-login__rules">
                         <div className="c-login__rule u-flex-center">

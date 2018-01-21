@@ -15,9 +15,10 @@
   width: 1em;
 
   &--room {
-    align-self: center;
+    left: calc( 50% - .5em );
     margin: 0;
     position: absolute;
+    top: calc( 50% - .5em );
   }
 }
 

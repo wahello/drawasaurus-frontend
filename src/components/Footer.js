@@ -30,6 +30,7 @@ class Footer extends Component {
     }
 
     adblock = () => {
+        if( this.ad === null ) return;
         if( this.ad.clientHeight === 0 ) {
             this.setState( { adBlocked: true } );
         }

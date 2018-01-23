@@ -16,6 +16,7 @@ class RoomStore {
     @observable timeAFK = 0;
     @observable users = new Map();
     @observable wordChoices = [];
+    @observable lowestHeight = null;
 
     constructor( rootStore ) {
         this.rootStore = rootStore;

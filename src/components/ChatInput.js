@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { action } from 'mobx';
+import { action, reaction } from 'mobx';
 import mobileDetect from 'mobile-detect';
 import { initSounds } from 'api/Audio';
 
-const USING_MOBILE = new mobileDetect( window.navigator.userAgent ).mobile();
+export const USING_MOBILE = new mobileDetect( window.navigator.userAgent ).mobile();
 const USING_IOS = !isNaN( new mobileDetect( window.navigator.userAgent ).version('iOS') );
 
 @inject('rootStore','socket') @observer
@@ -17,11 +17,27 @@ class ChatInput extends Component {
         }
     }
 
+    componentDidMount() {
+        const { roomStore } = this.props.rootStore; 
+        reaction( () => roomStore.lowestHeight,
+            lowestHeight => {
+                if( lowestHeight === true ) {
+                    this.input.blur();
+                }
+            }
+        );
+    }
+
     @action updateKeyboard = ( bool ) => {
         const { roomStore } = this.props.rootStore;
         initSounds();
+        
         if( USING_MOBILE ) {
             roomStore.keyboardOpen = bool;
+        }
+
+        if( !bool ) {
+            roomStore.lowestHeight = null;
         }
     }
 
@@ -46,6 +62,7 @@ class ChatInput extends Component {
         return (
             <form onSubmit={this.sendMessage} className="c-chat__box">
                 <input
+                    ref={input => this.input = input}
                     className="c-chat__input"
                     placeholder={this.state.showPlaceholder ? 'Chat or guess' : ''}
                     maxLength="150"

@@ -12,6 +12,7 @@ import RoomError from 'RoomError';
 import { BASE_CANVAS_WIDTH, BASE_CANVAS_HEIGHT } from 'CanvasStore';
 import { sndJoin, sndLeave, sndTimer, sndGuess, sndCorrect, sndTurn, sndGuessingOver } from 'api/Audio';
 import 'styles/Room.scss';
+import { USING_MOBILE } from 'ChatInput';
 
 const MIN_CHAT_WIDTH = 160;
 const MIN_CHAT_HEIGHT = 150;
@@ -355,13 +356,21 @@ class Room extends Component {
     }
 
     @action updateDimensions = () => {
-        const { canvasStore } = this.props.rootStore;
+        const { canvasStore, roomStore } = this.props.rootStore;
 
         let landscape = true;
         let w = window.innerWidth;
         let h = this.main.clientHeight;
         let header = this.header.clientHeight;
         h -= header;
+
+        if( USING_MOBILE ) {
+            if (roomStore.lowestHeight === null || roomStore.lowestHeight > h ) {
+                roomStore.lowestHeight = h;
+            } else if( roomStore.lowestHeight !== null && roomStore.keyboardOpen ) {
+                roomStore.lowestHeight = true;
+            }
+        }
 
         if( w > h ) {
             h -= 11;

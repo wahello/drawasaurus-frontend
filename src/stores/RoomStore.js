@@ -17,6 +17,7 @@ class RoomStore {
     @observable users = new Map();
     @observable wordChoices = [];
     @observable lowestHeight = null;
+    @observable boardMaxHeight = "none";
 
     constructor( rootStore ) {
         this.rootStore = rootStore;

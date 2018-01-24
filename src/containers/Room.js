@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { observable, action } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 import classNames from 'classnames';
 import Canvas from 'Canvas';
 import CanvasCursor from 'CanvasCursor';
@@ -12,9 +12,9 @@ import RoomError from 'RoomError';
 import { BASE_CANVAS_WIDTH, BASE_CANVAS_HEIGHT } from 'CanvasStore';
 import { sndJoin, sndLeave, sndTimer, sndGuess, sndCorrect, sndTurn, sndGuessingOver } from 'api/Audio';
 import 'styles/Room.scss';
-import { USING_MOBILE } from 'ChatInput';
+import { USING_MOBILE, USING_IOS } from 'ChatInput';
 
-const MIN_CHAT_WIDTH = 160;
+const MIN_CHAT_WIDTH = 120;
 const MIN_CHAT_HEIGHT = 150;
 
 @inject('rootStore','socket') @observer
@@ -64,6 +64,13 @@ class Room extends Component {
 
         socket.on( 'timerUpdate', this.timerUpdate );
         socket.on( 'skipPlayer', this.skipPlayer );
+
+        reaction( () => roomStore.keyboardOpen, 
+            keyboardOpen => {
+                if( USING_IOS )
+                    this.updateDimensions();
+            } 
+        );
     }
     
     componentDidMount() {
@@ -364,7 +371,7 @@ class Room extends Component {
         let header = this.header.clientHeight;
         h -= header;
 
-        if( USING_MOBILE ) {
+        if( USING_MOBILE && !USING_IOS ) {
             if (roomStore.lowestHeight === null || roomStore.lowestHeight > h ) {
                 roomStore.lowestHeight = h;
             } else if( roomStore.lowestHeight !== null && roomStore.keyboardOpen ) {
@@ -372,7 +379,10 @@ class Room extends Component {
             }
         }
 
-        if( w > h ) {
+        //Can't get real size of window when iOS keyboard is open, force landscape instead
+        let forceLandscape = roomStore.keyboardOpen && USING_IOS;
+
+        if( w > h || forceLandscape ) {
             h -= 11;
             let pct = BASE_CANVAS_WIDTH / BASE_CANVAS_HEIGHT;
             let newW = Math.round( h * pct );
@@ -398,6 +408,13 @@ class Room extends Component {
 
             h = newH;
         }
+
+        if( forceLandscape ) {
+            roomStore.boardMaxHeight = h + header;
+            window.scrollTo(0, 1);
+        } else {
+            roomStore.boardMaxHeight = "none";
+        }
         
         canvasStore.landscape = landscape;
         canvasStore.canvasHeight = h;
@@ -417,13 +434,17 @@ class Room extends Component {
             'l-board u-flex': true,
             'u-hidden': this.firstResize
         } );
+        const sidebarClasses = classNames( {
+            'l-sidebar u-flex-columns': true,
+            'l-sidebar--no-users': roomStore.keyboardOpen
+        } );
         return (
             <div className={mainClasses} ref={main => this.main = main}>
                 <RoomError />
                 {this.firstResize && 
                     <div className="c-spinner c-spinner--room" />
                 }
-                <div className={boardClasses}>
+                <div className={boardClasses} style={{maxHeight: roomStore.boardMaxHeight}}>
                     <div className="l-canvas u-flex-columns">
                         <div ref={header => this.header = header} className="c-canvas-header u-no-select">
                             {roomStore.roomStatus}
@@ -435,7 +456,7 @@ class Room extends Component {
                             <Canvas />
                         </div>
                     </div>
-                    <div className="l-sidebar u-flex-columns">
+                    <div className={sidebarClasses}>
                         {!roomStore.usersHidden &&
                             <UserList />
                         }

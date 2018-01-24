@@ -422,6 +422,11 @@ $s: 2em;
   flex-grow: 1;
   max-width: 220px;
   width: 100%;
+
+  &--no-users {
+    font-size: .8em;
+    max-width: 130px;
+  }
 }
 
 .c-chat {

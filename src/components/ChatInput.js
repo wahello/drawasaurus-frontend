@@ -5,7 +5,7 @@ import mobileDetect from 'mobile-detect';
 import { initSounds } from 'api/Audio';
 
 export const USING_MOBILE = new mobileDetect( window.navigator.userAgent ).mobile();
-const USING_IOS = !isNaN( new mobileDetect( window.navigator.userAgent ).version('iOS') );
+export const USING_IOS = !isNaN( new mobileDetect( window.navigator.userAgent ).version('iOS') );
 
 @inject('rootStore','socket') @observer
 class ChatInput extends Component {

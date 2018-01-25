@@ -7,7 +7,7 @@ import { USING_IOS } from 'ChatInput';
 class Footer extends Component {
     constructor( props ) {
         super( props );
-        this.state = { adBlocked: false };
+        this.state = { adblocked: null };
     }
 
     @action componentDidMount() {
@@ -15,7 +15,9 @@ class Footer extends Component {
 
         ( window.adsbygoogle = window.adsbygoogle || [] ).push( {} );
         window.addEventListener( 'resize', this.resize );
-        setTimeout( this.adblock, 500 );
+        if( this.state.adblocked === null ) {
+            setTimeout( this.checkAdblock, 3000 );
+        }
 
         if( USING_IOS && !roomStore.keyboardOpen ) {
             roomStore.forceRefresh = true;
@@ -24,6 +26,17 @@ class Footer extends Component {
 
     componentWillUnmount() {
         window.removeEventListener( 'resize', this.resize );
+    }
+
+    @action checkAdblock = () => {
+        if( this.ad === null ) return;
+
+        if( this.ad.clientHeight === 0 ) {
+            this.setState( { adblocked: true } );
+            this.props.rootStore.roomStore.forceRefresh = true;
+        } else {
+            this.setState( { adblocked: false } );
+        }
     }
 
     resize = () => {
@@ -39,17 +52,10 @@ class Footer extends Component {
         }
     }
 
-    adblock = () => {
-        if( this.ad === null ) return;
-        if( this.ad.clientHeight === 0 ) {
-            this.setState( { adBlocked: true } );
-        }
-    }
-
     render() {
         return (
             <footer className="c-footer">
-                { this.state.adBlocked && 
+                { this.state.adblocked && 
                     <div className="c-footer__blocked u-flex-center-all">
                     <span className="c-footer__blocktext">
                         Please consider disabling your ad blocker to help us continue running 

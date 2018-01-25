@@ -18,6 +18,7 @@ class RoomStore {
     @observable wordChoices = [];
     @observable lowestHeight = null;
     @observable boardMaxHeight = "none";
+    @observable forceRefresh = false;
 
     constructor( rootStore ) {
         this.rootStore = rootStore;

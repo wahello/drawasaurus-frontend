@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
+import { inject } from 'mobx-react';
+import { action } from 'mobx';
+import { USING_IOS } from 'ChatInput';
 
+@inject('rootStore')
 class Footer extends Component {
     constructor( props ) {
         super( props );
         this.state = { adBlocked: false };
     }
 
-    componentDidMount() {
+    @action componentDidMount() {
+        const { roomStore } = this.props.rootStore;
+
         ( window.adsbygoogle = window.adsbygoogle || [] ).push( {} );
         window.addEventListener( 'resize', this.resize );
         setTimeout( this.adblock, 500 );
+
+        if( USING_IOS && !roomStore.keyboardOpen ) {
+            roomStore.forceRefresh = true;
+        }
     }
 
     componentWillUnmount() {

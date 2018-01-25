@@ -39,6 +39,10 @@ class ChatInput extends Component {
         if( !bool ) {
             roomStore.lowestHeight = null;
         }
+
+        if( USING_IOS ) {
+            roomStore.forceRefresh = true;
+        }
     }
 
     handleChange = ( e ) => {

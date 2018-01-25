@@ -64,12 +64,14 @@ class Room extends Component {
 
         socket.on( 'timerUpdate', this.timerUpdate );
         socket.on( 'skipPlayer', this.skipPlayer );
-
-        reaction( () => roomStore.keyboardOpen, 
-            keyboardOpen => {
-                if( USING_IOS )
+        
+        reaction( () => roomStore.forceRefresh,
+            forceRefresh => {
+                if( forceRefresh ) {
                     this.updateDimensions();
-            } 
+                    roomStore.forceRefresh = false;
+                }
+            }
         );
     }
     

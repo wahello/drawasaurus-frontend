@@ -23,6 +23,7 @@ class CanvasStore {
     @observable timerVisible = false;
     @observable updateCanvasBound = true;
     @observable undoValue = 0;
+    @observable mouseDown = false;
 
     constructor( rootStore ) {
         this.rootStore = rootStore;

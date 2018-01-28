@@ -15,15 +15,25 @@ class Canvas extends Component {
 
         this.mouseDrawing = false;
         this.mouseOutside = false;
-        this.lastPoint = null;
 
         this.currentCanvas = [];
         this.drawnCanvas = 0;
         this.undoHistory = [];
 
+        this.lastSendPending = 0;
+
+        this.previewedLines = false;
+        this.previewTime = null;
+
+        //Track point of mouse outside canvas
+        this.lastMouseOutside = null;
+
         this.pendingLines = {
             lines: []
         };
+        this.pendingPreview = [];
+
+        this.nextLineDraw = null;
     }
 
     componentWillMount() {
@@ -35,10 +45,14 @@ class Canvas extends Component {
         socket.on( 'undoLines', this.receiveUndoLines );
 
         document.addEventListener( 'mouseup', this.onMouseUpOutside, false );
+        document.addEventListener( 'mousemove', this.mouseMoveOutside, false );
+        document.addEventListener( 'touchmove', this.mouseMoveOutside, false );
     }
 
     componentWillUnmount() {
         document.removeEventListener( 'mouseup', this.onMouseUpOutside, false );
+        document.removeEventListener( 'mousemove', this.mouseMoveOutside, false );
+        document.removeEventListener( 'touchmove', this.mouseMoveOutside, false );
     }
 
     componentDidMount() {
@@ -54,27 +68,73 @@ class Canvas extends Component {
 
     //Draw lines as they're added to the array using requestAnimationFrame
     drawLoop = () => {
+        if( this.nextLineDraw !== null && Date.now() < this.nextLineDraw ) {
+            raf( this.drawLoop );
+            return;
+        }
+
         if( this.currentCanvas.length > this.drawnCanvas ) {
             let line = this.currentCanvas[ this.drawnCanvas ];
+            this.drawLine( line, this.drawnCanvas );
             this.drawnCanvas++;
-            this.drawLine( line );
+
+            //Timestamp on line tells us how many ms to wait before drawing the next one
+            if( typeof( line.t ) !== 'undefined' ) {
+                this.nextLineDraw = Date.now() + Math.min( 200, line.t );
+            }
         }
+
         raf( this.drawLoop );
+    }
+
+    @action previewPendingLines = () => {
+        if( this.pendingPreview.length === 0 ) return;
+        const { canvasStore } = this.props.rootStore;
+
+        this.undoHistory[ this.undoHistory.length - 1 ] += 1;
+        canvasStore.undoValue = this.undoHistory[ this.undoHistory.length - 1 ];
+
+        let now = Date.now();
+        var time = 0;
+        if( this.pendingPreview.length <= this.pendingLines.lines.length && this.previewTime !== null ) {
+            time = now - this.previewTime;
+            let insert = this.pendingLines.lines.length - this.pendingPreview.length;
+            this.pendingLines.lines.splice( insert, 0, time );
+
+            this.previewTime = now;
+        } else {
+            this.previewTime = now;
+        }
+
+
+        let line = {};
+        if( this.previewedLines ) {
+            line = { lines: this.pendingPreview };
+        } else {
+            let thick = canvasStore.brushSize;
+            if( canvasStore.eraserEnabled ) {
+                thick += ERASER_EXTRA;
+            }
+            let colour = canvasStore.cursorColour;
+
+            line = {
+                colour: colour,
+                thick: thick,
+                lines: this.pendingPreview
+            };
+        }
+
+        this.currentCanvas.push( line );
+        this.pendingPreview = [];
     }
 
     @action sendPendingLines = () => {
         if( this.pendingLines.lines.length === 0 ) return;
 
         const { socket } = this.props;
-        const { canvasStore } = this.props.rootStore;
 
         socket.emit( 'drawLine', this.pendingLines );
-        this.currentCanvas.push( this.pendingLines );
         this.pendingLines = { lines: [] };
-
-        //Update undo history
-        this.undoHistory[ this.undoHistory.length - 1 ] += 1;
-        canvasStore.undoValue = this.undoHistory[ this.undoHistory.length - 1 ];
     }
 
     //Receive canvas array (in JSON) from server and draw
@@ -96,7 +156,7 @@ class Canvas extends Component {
         //Draw canvas lines on next animation frame
         raf( () => {
             for( let i = 0; i < this.currentCanvas.length; i++ ) {
-                this.drawLine( this.currentCanvas[ i ] );
+                this.drawLine( this.currentCanvas[ i ], i );
             }
         } );
     }
@@ -128,7 +188,7 @@ class Canvas extends Component {
 
         if( roomStore.currentDrawer ) {
             this.undoHistory.pop();
-            canvasStore.undoValue = this.undoHistory[this.undoHistory.length - 1];
+            canvasStore.undoValue = this.undoHistory[ this.undoHistory.length - 1 ];
         }
     }
 
@@ -153,9 +213,37 @@ class Canvas extends Component {
         return [ x, y ];
     }
     
-    //Receive line from server
+    //Receive lines from server
     drawLineServer = ( line ) => {
-        this.currentCanvas.push( line );
+        //Seperate points in to the same blocks used when drawing real-time
+        let pendingLine = { lines: [] };
+
+        if( line.lines.length > 0 && typeof( line.lines[0].colour ) !== 'undefined' ) {
+            pendingLine.colour = line.colour;
+            pendingLine.thick = line.thick;
+        }
+
+        for( let i = 0; i < line.lines.length; i++ ) {
+            let item = line.lines[ i ];
+            if( Array.isArray( item ) ) {
+                pendingLine.lines.push( item );
+
+                if( i === 0 && typeof( line.colour ) !== 'undefined' ) {
+                    pendingLine.colour = line.colour;
+                    pendingLine.thick = line.thick;
+                }
+
+                if( i === line.lines.length - 1 ) {
+                    this.currentCanvas.push( pendingLine );
+                }
+            } else {
+                if( pendingLine.lines.length === 0 ) continue;
+                //Timestamp after each block tells us how many ms to wait between drawing lines
+                pendingLine.t = item;
+                this.currentCanvas.push( pendingLine );
+                pendingLine = { lines: [] };
+            }
+        }
     }
 
     //Create line from mouse movement
@@ -163,32 +251,16 @@ class Canvas extends Component {
         const { canvasStore } = this.props.rootStore;
         const { multWidthReverse, multHeightReverse } = canvasStore;
         let pos = this.getMousePos( e );
-        if( pos === null ) return;
+        if( pos === null ) return null;
 
-        pos[ 0 ] *= multWidthReverse;
-        pos[ 1 ] *= multHeightReverse;
+        let x = Math.round( pos[ 0 ] *= multWidthReverse );
+        let y = Math.round( pos[ 1 ] *= multHeightReverse );
 
-        let point = { x: pos[ 0 ], y: pos[ 1 ] };
-        point.x = Math.round( point.x );
-        point.y = Math.round( point.y );
-
-        let lines = [];
-        if ( !mouseMove || this.mouseOutside ) {
-            lines = [ [ point.x, point.y ] ];
-            if( this.mouseOutside ) {
-                this.mouseOutside = false;
-            }
-        } else {
-            lines = [ [ this.lastPoint.x, this.lastPoint.y ], [ point.x, point.y ] ];
-        }
-
-        this.lastPoint = point;
-
-        return lines;
+        return [ x, y ];
     }
 
     //New drawing method with line smoothing
-    drawLine = ( pending ) => {
+    drawLine = ( pending, index ) => {
         if( !pending ) return;
 
         const { canvasStore } = this.props.rootStore;
@@ -203,20 +275,32 @@ class Canvas extends Component {
         context.beginPath();
 
         let lines = pending.lines;
-        let startX = lines[0][0] * multWidth;
-        let startY = lines[0][1] * multHeight;
-        context.moveTo(startX, startY);
+
+        //If line is continuous grab last point of previous line for smoothing
+        if( !pending.hasOwnProperty( 'colour' ) ) {
+            let lastLine = this.currentCanvas[ index - 1 ];
+            lines.unshift( lastLine.lines[ lastLine.lines.length - 1 ] );
+        }
+
+        let startX = Math.round( lines[0][0] * multWidth );
+        let startY = Math.round( lines[0][1] * multHeight );
+        context.moveTo( startX, startY );
 
         if( lines.length === 1 ) {
             context.lineTo( startX-1, startY );
+        } else if( lines.length === 2 ) {
+            let nextLine = lines[1];
+            let x2 = Math.round( nextLine[0] * multWidth );
+            let y2 = Math.round( nextLine[1] * multHeight );
+            context.lineTo( x2, y2 );
         }
 
         for( var i = 1; i < lines.length - 2; i++ ) {
             let nextLine = lines[i + 1];
-            let x1 = lines[i][0] * multWidth;
-            let y1 = lines[i][1] * multHeight;
-            let x2 = nextLine[0] * multWidth;
-            let y2 = nextLine[1] * multHeight;
+            let x1 = Math.round( lines[i][0] * multWidth );
+            let y1 = Math.round( lines[i][1] * multHeight );
+            let x2 = Math.round( nextLine[0] * multWidth );
+            let y2 = Math.round( nextLine[1] * multHeight );
 
             let xc = (x1 + x2) / 2;
             let yc = (y1 + y2) / 2;
@@ -226,10 +310,10 @@ class Canvas extends Component {
 
         if( lines.length > 2 ) {
             let lastLine = lines[i + 1];
-            let x1 = lines[i][0] * multWidth;
-            let y1 = lines[i][1] * multHeight;
-            let x2 = lastLine[0] * multWidth;
-            let y2 = lastLine[1] * multHeight;
+            let x1 = Math.round( lines[i][0] * multWidth );
+            let y1 = Math.round( lines[i][1] * multHeight );
+            let x2 = Math.round( lastLine[0] * multWidth );
+            let y2 = Math.round( lastLine[1] * multHeight );
 
             context.quadraticCurveTo(x1, y1, x2, y2);
         }
@@ -241,46 +325,72 @@ class Canvas extends Component {
         const { roomStore, canvasStore } = this.props.rootStore;
         this.moveCursor( e, true );
         if( roomStore.currentDrawer && this.mouseDrawing ) {
-            let lines = this.getLineFromEvent( e, !newMove );
+            //If mouse was outside, start new line
+            if( this.mouseOutside ) { 
+                newMove = true;
+                this.previewedLines = false;
+                this.previewTime = null;
+            }
 
-            if( newMove ) {
+            let lines = [ this.getLineFromEvent( e, !newMove ) ];
+            if( lines.length === 0 || lines[0] === null ) return;
+
+            //Skip points that are too close to the previous one
+            if( this.pendingLines.lines.length > 0 ) {
+                let lastLine = this.pendingLines.lines[ this.pendingLines.lines.length - 1 ];
+                let x1 = lines[0][0];
+                let y1 = lines[0][1];
+                let x2 = lastLine[0];
+                let y2 = lastLine[1];
+                let dist = Math.sqrt( Math.pow( x2 - x1, 2 ) + Math.pow( y2 - y1, 2 ) );
+                if( dist <= 1 ) {
+                    return;
+                }
+            }
+
+            //Start new line in undo history
+            if( newMove && !this.mouseOutside ) {
                 this.undoHistory.push( 0 );
             }
 
-            if( this.pendingLines.lines.length === 0 ) {
+            //If mouse was outside, use last point of mouse outside the canvas as start of line
+            if( this.mouseOutside ) {
+                if( this.lastMouseOutside !== null ) {
+                    lines.unshift( this.lastMouseOutside );
+                }
+                this.mouseOutside = false;
+            }
+
+            //Only track colour/thick on new line
+            if( newMove ) {
                 let thick = canvasStore.brushSize;
                 if( canvasStore.eraserEnabled ) {
                     thick += ERASER_EXTRA;
                 }
                 this.pendingLines.colour = canvasStore.cursorColour;
                 this.pendingLines.thick = thick;
-            } else {
-                let lastLine = this.pendingLines.lines[ this.pendingLines.lines.length - 1 ];
-                let line = lines[0];
-                if( lastLine ) {
-                    const { multWidthReverse, multHeightReverse } = canvasStore;
-
-                    let x1 = lastLine[0];
-                    let y1 = lastLine[1];
-                    let x2 = line[0];
-                    let y2 = line[1];
-
-                    let a = ( x1 - x2 ) * multWidthReverse;
-                    let b = ( y1 - y2 ) * multHeightReverse;
-                    let distance = Math.sqrt( a*a + b*b );
-                    if( distance <= 2 ) {
-                        return;
-                    }
-                }
             }
 
+            //Push points to array to draw client-side and array to send to server
             for( let i = 0; i < lines.length; i++ ) {
                 this.pendingLines.lines.push( lines[i] );
+                this.pendingPreview.push( lines[i] );
             }
 
-            if( this.pendingLines.lines.length >= 3 ) {
-                this.sendPendingLines();
-            }            
+            let now = Date.now();
+
+            //Display line client-side after 3 points saved
+            if( this.pendingPreview.length >= 3 ) {
+                //Draw line
+                this.previewPendingLines();
+                this.previewedLines = true;
+
+                //Send to server after buffering time
+                if( ( now - this.lastSendPending ) >= 1000 ) {
+                    this.sendPendingLines();
+                    this.lastSendPending = now;
+                }
+            }
         }
     }
 
@@ -302,10 +412,25 @@ class Canvas extends Component {
         }
     }
 
-    onMouseUpOutside = ( e ) => {
+    @action onMouseUpOutside = ( e ) => {
+        const { canvasStore } = this.props.rootStore;
+
         if( this.mouseDrawing && this.mouseOutside ) {
             this.mouseDrawing = false;
             this.mouseOutside = false;
+            canvasStore.mouseDown = false;
+        }
+    }
+
+    //Track mouse outside canvas if player still drawing
+    mouseMoveOutside = ( e ) => {
+        if( this.mouseDrawing && this.mouseOutside ) {
+            let line = this.getLineFromEvent( e, false );
+            if( line === null ) {
+                this.lastMouseOutside = null;
+            } else {
+                this.lastMouseOutside = line;
+            }
         }
     }
 
@@ -323,10 +448,10 @@ class Canvas extends Component {
    
     isTouching = false;
     //mousedown & touchstart
-    onMouseTouchStart = ( e ) => {
+    @action onMouseTouchStart = ( e ) => {
         e.preventDefault();
         initSounds();
-        const { roomStore } = this.props.rootStore;
+        const { roomStore, canvasStore } = this.props.rootStore;
         if ( roomStore.currentDrawer ) {
             //Prevent mousedown firing after a quick touch tap (weird bug)
             if( e.nativeEvent.type === 'touchstart' ) {
@@ -334,7 +459,10 @@ class Canvas extends Component {
             } else if( this.isTouching ) {
                 return;
             }
+            this.lastSendPending = Date.now();
+            this.mouseOutside = false;
             this.mouseDrawing = true;
+            canvasStore.mouseDown = true;
             this.mouseDraw( e, true );
         }
     }
@@ -344,18 +472,40 @@ class Canvas extends Component {
         this.mouseDraw( e, false );
         this.mouseOutside = true;
         canvasStore.hideCursor();
-    }
 
-    onMouseUp = ( e ) => {
-        this.mouseDrawing = false;
+        this.previewPendingLines();
+        this.previewedLines = false;
         this.sendPendingLines();
+        this.previewTime = null;
     }
 
-    onTouchEnd = ( e ) => {
+    @action onMouseUp = ( e ) => {
+        const { canvasStore } = this.props.rootStore;
+
+        this.mouseDrawing = false;
+        canvasStore.mouseDown = false;
+        this.mouseOutside = false;
+        this.lastMouseOutside = null;
+
+        this.previewPendingLines();
+        this.sendPendingLines();
+        this.previewedLines = false;
+        this.previewTime = null;
+    }
+
+    @action onTouchEnd = ( e ) => {
         const { canvasStore } = this.props.rootStore;
         this.mouseDrawing = false;
+        canvasStore.mouseDown = false;
         canvasStore.hideCursor();
+        this.mouseOutside = false;
+        this.lastMouseOutside = null;
+
+        this.previewPendingLines();
         this.sendPendingLines();
+        this.previewedLines = false;
+        this.previewTime = null;
+
         //Reset after preventing bug so users can switch between mouse & touch
         setTimeout( () => this.isTouching = false, 0 );
     }

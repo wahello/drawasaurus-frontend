@@ -39,12 +39,14 @@ const COLOURS = [
 const Button = props => {
     const outer = classNames( { 
         'c-canvas-controls__option u-flex-columns u-flex-center-all': true,
-        'c-canvas-controls__option--disabled': props.disabled
+        'c-canvas-controls__option--disabled': props.disabled,
+        'c-canvas-controls__option--drawing': props.drawing
     } );
     const inner = classNames( {
         'c-canvas-controls__button u-flex-center-all': true,
         'c-canvas-controls__button--active': props.enabled,
-        'c-canvas-controls__button--disabled': props.disabled
+        'c-canvas-controls__button--disabled': props.disabled,
+        'c-canvas-controls__button--drawing': props.drawing
     } );
     return ( 
         <div className={outer} onClick={props.click}>
@@ -221,11 +223,13 @@ class CanvasOverlay extends Component {
         const { roomStore, canvasStore } = this.props.rootStore;
         const left = classNames( { 
             'c-canvas-controls__category c-canvas-controls__category--left u-flex': true,
-            'u-hidden': ( !roomStore.currentDrawer )
+            'u-hidden': ( !roomStore.currentDrawer ),
+            'c-canvas-controls__category--drawing': canvasStore.mouseDown
         } );
         const right = classNames( { 
             'c-canvas-controls__category c-canvas-controls__category--right u-flex': true,
-            'u-hidden': ( !roomStore.currentDrawer )
+            'u-hidden': ( !roomStore.currentDrawer ),
+            'c-canvas-controls__category--drawing': canvasStore.mouseDown
         } );
         const timer = classNames( { 
             'c-canvas-timer u-flex-center-all': true,
@@ -234,7 +238,7 @@ class CanvasOverlay extends Component {
         } )
         const overlay = classNames( {
             'c-canvas-overlay u-flex-center-all': true
-        } ); 
+        } );
         return (
             <div className="c-canvas-controls u-flex-center-all u-no-select">
                 
@@ -247,7 +251,8 @@ class CanvasOverlay extends Component {
                 <div className={left}>
                     <Button 
                         name="Size"
-                        enabled={roomStore.canvasWindow === WINDOW_BRUSHSIZE} 
+                        enabled={roomStore.canvasWindow === WINDOW_BRUSHSIZE}
+                        drawing={canvasStore.mouseDown} 
                         click={() => this.toggleCanvasWindow( WINDOW_BRUSHSIZE )}
                     >
                         <div className={'c-size c-size--' + canvasStore.brushSize }></div>
@@ -256,19 +261,21 @@ class CanvasOverlay extends Component {
                         name="Colour" 
                         colour={canvasStore.brushColour}
                         enabled={roomStore.canvasWindow === WINDOW_BRUSHCOLOUR} 
+                        drawing={canvasStore.mouseDown} 
                         click={() => this.toggleCanvasWindow( WINDOW_BRUSHCOLOUR )}
                     />
-                    <Button name="Eraser" enabled={canvasStore.eraserEnabled} click={canvasStore.toggleEraser}>
+                    <Button name="Eraser" enabled={canvasStore.eraserEnabled} drawing={canvasStore.mouseDown}  click={canvasStore.toggleEraser}>
                         <i className="c-canvas-controls__icon icon-eraser" />
                     </Button>
                 </div>
                 <div className={right}>
-                    <Button name="Undo" disabled={!canvasStore.undoEnabled} click={this.undoLines}>
+                    <Button name="Undo" disabled={!canvasStore.undoEnabled} drawing={canvasStore.mouseDown}  click={this.undoLines}>
                         <i className="c-canvas-controls__icon icon-ccw" />
                     </Button>
                     <Button 
                         name="Clear"
                         enabled={roomStore.canvasWindow === WINDOW_FILLCOLOUR} 
+                        drawing={canvasStore.mouseDown} 
                         click={() => this.toggleCanvasWindow( WINDOW_FILLCOLOUR )}
                     >
                         <i className="c-canvas-controls__icon icon-cancel" />

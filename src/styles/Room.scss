@@ -233,7 +233,7 @@
     opacity: 1;
     padding: $button-padding;
     position: absolute;
-    transition: opacity .2s;
+    transition: opacity .4s;
 
     &--left {
       left: 0;
@@ -254,6 +254,10 @@
       flex-wrap: wrap;
       width: ( $button-palette-size * $buttons-per-line ) + ( $button-palette-margin * ( $buttons-per-line * 2 ) ) + .1em;
     }
+
+    &--drawing {
+      opacity: .25;
+    }
   }
 
   &__option {
@@ -265,6 +269,11 @@
     &--disabled {
       cursor: default;
       opacity: .5;
+    }
+
+    &--drawing {
+      cursor: auto;
+      pointer-events: none;
     }
   }
 
@@ -284,6 +293,11 @@
 
     &--disabled {
       cursor: default;
+    }
+
+    &--drawing {
+      cursor: auto;
+      pointer-events: none;
     }
 
     &--picker {

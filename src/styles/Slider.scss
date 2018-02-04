@@ -1,0 +1,94 @@
+@import 'variables'; 
+
+//Mostly from the default react-rangeslider styles
+.rangeslider {
+  display: block;
+  position: relative;
+  margin: 10px 0;
+  margin-bottom: 25px;
+  touch-action: none;
+
+  &-horizontal {
+    height: 12px;
+    width: 100%;
+  }
+
+  &__fill {
+    background-color: $color-purple;
+    border-radius: 10px;
+    display: block;
+    height: 100%;
+    top: 0;
+  }
+
+  &__handle {
+    background-color: $color-green;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    position: absolute;
+    transform: translate3d(-50%, -50%, 0);
+    top: 50%;
+    width: 20px;
+
+    &:focus {
+        outline: 0;
+    }
+  }
+
+  &__handle-tooltip {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    position: absolute;
+    background-color: $color-green;
+    font-weight: normal;
+    font-size: 14px;
+    transition: all 100ms ease-in;
+    border-radius: 4px;
+    display: inline-block;
+    color: white;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+    top: -40px;
+
+    span {
+      margin-top: 8px;
+      display: inline-block;
+      line-height: 100%;
+    }
+
+    &:after {
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid $color-green;
+      bottom: -6px;
+      content: ' ';
+      height: 0;
+      left: 50%;
+      position: absolute;
+      transform: translate3d(-50%, 0, 0);
+      width: 0;
+    }   
+  }
+
+  &__handle-label {
+    display: none;
+  }
+
+  &__labels {
+    position: relative;
+  }
+
+  &__label-item {
+    color: $color-purple;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    position: absolute;
+    transform: translate3d(-50%, 0, 0);
+    top: 10px;
+  }
+}

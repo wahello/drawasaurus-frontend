@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { observable, action } from 'mobx';
+import Slider from 'react-rangeslider';
+import 'styles/Slider.scss';
 
 @inject('rootStore','socket') @observer
 class CreateRoomWindow extends Component {
     @observable roomName = '';
+    @observable maxPlayers = 8;
 
     componentDidMount() {
         this.textInput.focus();
@@ -14,8 +17,12 @@ class CreateRoomWindow extends Component {
         e.target.select();
     }
 
-    @action handleChange = ( e ) => {
+    @action handleNameChange = ( e ) => {
         this.roomName = e.target.value;
+    }
+
+    @action handlePlayersChange = ( value ) => {
+        this.maxPlayers = Math.max( 1, value );
     }
 
     startRoom = ( e ) => {
@@ -25,7 +32,7 @@ class CreateRoomWindow extends Component {
 
         let name = this.roomName.trim();
         if ( name !== '' ) {
-            socket.emit( 'createNewRoom', name );
+            socket.emit( 'createNewRoom', name, this.maxPlayers );
             uiStore.closeModal();
         }
     }
@@ -48,11 +55,22 @@ class CreateRoomWindow extends Component {
                             ref={input => this.textInput = input}
                             placeholder="Enter a room name"
                             value={this.roomName}
-                            onChange={this.handleChange}
+                            onChange={this.handleNameChange}
                             onFocus={this.selectText}
                             maxLength="12"
                             spellCheck="false"
                             autoComplete="off" />
+                    </div>
+                    <div className="c-settings__row u-flex-columns u-flex-center-all">
+                        <div className="c-settings__valuerow u-flex-center">
+                            <span className="c-settings__label">Max Players:</span>
+                        </div>
+                        <Slider
+                            min={0}
+                            max={12}
+                            labels={ { 0: '0', 2: '2', 4: '4', 6: '6', 8: '8', 10: '10', 12: '12' } }
+                            value={this.maxPlayers} 
+                            onChange={this.handlePlayersChange} />
                     </div>
                     <button type="submit" className="c-settings__save">
                         Create

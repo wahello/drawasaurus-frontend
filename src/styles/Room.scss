@@ -464,6 +464,17 @@ $s: 2em;
     height: 0;
     overflow-y: auto;
     word-wrap: break-word;
+
+    &::-webkit-scrollbar {
+      background-color: rgba( $color-purple, .1 );
+      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba( $color-purple, .2 );
+      border-radius: 4px;
+    }
   }
 
   &__box {

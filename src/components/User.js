@@ -9,7 +9,8 @@ class User extends Component {
         const c = classNames( {
             'c-users__user u-flex': true,
             'c-users__user--drawing': user.isDrawing === 1,
-            'c-users__user--guessed': user.isDrawing === 2
+            'c-users__user--guessed': user.isDrawing === 2,
+            'c-users__user--me': user.me
         } );
         return (
             <div className={c}>

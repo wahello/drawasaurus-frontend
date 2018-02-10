@@ -275,6 +275,7 @@ class Room extends Component {
         for( let id in users ) {
             let user = users[ id ];
             user.id = id;
+            user.me = ( user.nick === uiStore.currentUsername );
             roomStore.users.set( id, user );
         }
 

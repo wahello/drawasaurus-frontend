@@ -12,6 +12,8 @@
   font-size: 24px;
   height: 1em;
   margin: 20px;
+  opacity: 1;
+  transition: opacity .4s ease-in;
   width: 1em;
 
   &--room {

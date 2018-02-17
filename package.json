@@ -22,12 +22,17 @@
   "devDependencies": {
     "cross-env": "^5.1.3",
     "custom-react-scripts": "0.2.1",
-    "mobx-react-devtools": "^4.2.15"
+    "mobx-react-devtools": "^4.2.15",
+    "react-snap": "^1.11.4"
+  },
+  "reactSnap": {
+    "skipThirdPartyRequests": true
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "start-https": "cross-env HTTPS=true NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "build": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts build",
+    "postbuild": "react-snap",
     "server": "node ./server/game",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

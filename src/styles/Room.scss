@@ -109,7 +109,8 @@
   flex: auto;
   font-size: 12.5px;
   justify-content: center;
-  transition: opacity .3s ease;
+  opacity: 1;
+  transition: opacity .8s ease-out;
   width: 100%;
 
   @include small-phone {

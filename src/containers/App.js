@@ -11,13 +11,16 @@ import Lobby from 'Lobby';
 import Room from 'Room';
 import Modal from 'Modal';
 import LoginWindow from 'modals/LoginWindow';
-import mobileDetect from 'mobile-detect';
+import { IS_SSR, IS_CRAWLER } from 'api/UserAgent';
 import 'styles/App.scss';
 
 let connection = '//' + window.location.hostname;
 const secure = ( window.location.protocol === 'https:' );
 if( window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith( '192' ) ) {
   connection += ( secure ? ':8000' : ':7999' );
+}
+if( IS_SSR ) {
+  connection = null;
 }
 const socket = io( connection, { transports: ['websocket'], upgrade: false } );
 
@@ -36,8 +39,7 @@ class App extends Component {
         Cookies.set( 'session', id, { secure: secure } );
     });
 
-    const isCrawler = new mobileDetect( window.navigator.userAgent ).is( 'Bot' );
-    if( isCrawler ) {
+    if( IS_CRAWLER ) {
       uiStore.showModal( <LoginWindow /> );
     }
   }
@@ -75,9 +77,15 @@ class App extends Component {
           {!roomStore.keyboardOpen &&
             <Header />
           }
+          <noscript>
+            <div class="c-no-script">
+              Sorry, you need JavaScript enabled to play this game!
+            </div>
+          </noscript>
           <Switch>
             <Route path='/room/:name' component={Room} />
-            <Route exact path='*' component={Lobby} />
+            <Route exact path='/room/' component={Room} />
+            <Route path='*' component={Lobby} />
           </Switch>
           {!roomStore.keyboardOpen &&
             <Footer />

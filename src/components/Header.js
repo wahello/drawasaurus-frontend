@@ -3,7 +3,11 @@ import { observer, inject } from 'mobx-react';
 import RoomInfoWindow from 'modals/RoomInfoWindow';
 import SettingsWindow from 'modals/SettingsWindow';
 import Logo from 'images/logo.svg';
+import { IS_SSR } from 'api/UserAgent';
 import 'styles/Header.scss';
+
+const isRoom = window.location.pathname.startsWith("/room/");
+const prerenderingRoom = IS_SSR && isRoom;
 
 @inject('rootStore') @observer
 class Header extends Component {
@@ -13,11 +17,17 @@ class Header extends Component {
             <header className="c-header u-flex u-no-select">
                 <a href="/" className="c-header__home u-header-item u-header-item--left u-flex-center">
                     <img className="c-logo" alt="Drawasaurus Logo" src={Logo} height="20" width="20" />
-                    {!uiStore.connectedToRoom &&
+                    {!isRoom &&
                         <div className="c-header__sitename">Drawasaurus</div>
                     }
                 </a>
-                {uiStore.connectedToRoom && 
+                {prerenderingRoom && 
+                    <div className="c-header__room u-header-item u-header-item--left u-flex-columns">
+                        <p className="c-header__roomname">Drawasaurus</p>
+                        <p className="c-header__roomstatus">Loading game...</p>
+                    </div> 
+                }
+                {( isRoom && !prerenderingRoom ) && 
                     <div onClick={() => uiStore.showModal( <RoomInfoWindow /> )} className="c-header__room u-header-item u-header-item--left u-flex-columns">
                         <p className="c-header__roomname">{roomStore.displayRoomName}</p>
                         <p className="c-header__roomstatus">{roomStore.headerStatus}</p>

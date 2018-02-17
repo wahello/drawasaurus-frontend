@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { action } from 'mobx';
+import { IS_SSR } from 'api/UserAgent';
 import CreateRoomWindow from 'modals/CreateRoomWindow';
 import RoomList from 'RoomList';
 import AFKTimer from 'AFKTimer';
@@ -21,7 +22,9 @@ export const getRoomURL = ( name ) => {
 class OnlinePlayers extends Component {
     render() {
         const { uiStore } = this.props.rootStore;
-        if ( uiStore.connecting || uiStore.lobbyRooms === null ) {
+        if( IS_SSR ) {
+            return <span className="c-lobby-header__players">Loading game...</span>;
+        } else if ( uiStore.connecting || uiStore.lobbyRooms === null ) {
             return <span className="c-lobby-header__players">Loading rooms...</span>;
         } else {
             return (
@@ -76,6 +79,7 @@ class Lobby extends Component {
         const { uiStore } = this.props.rootStore;
         return (
             <div className="l-lobby u-flex-columns u-flex-center">
+                <a style={{ display: "none" }} href="/room/">SSR</a>
                 <div className="c-lobby-header u-flex-columns u-flex-center-all">
                     <span className="c-lobby-header__welcome">Welcome to</span>
                     <span className="c-lobby-header__name">Drawasaurus</span>

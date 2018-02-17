@@ -7,10 +7,22 @@ import App from 'App';
 import 'normalize.css';
 import './styles/fa-drawasaurus.css';
 
-ReactDOM.render( (
-  <BrowserRouter>
-    <Provider rootStore={new RootStore()}>
-      <App />
-    </Provider>
-  </BrowserRouter>
-), document.getElementById( 'root' ) );
+const rootElement = document.getElementById('root');
+
+if( rootElement.hasChildNodes() ) {
+  ReactDOM.hydrate( (
+    <BrowserRouter>
+      <Provider rootStore={new RootStore()}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  ), rootElement );
+} else {
+  ReactDOM.render( (
+    <BrowserRouter>
+      <Provider rootStore={new RootStore()}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  ), rootElement );
+}

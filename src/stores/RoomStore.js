@@ -6,7 +6,7 @@ class RoomStore {
     @observable currentDrawer = false;
     @observable errorButtons = [ false, false, false ];
     @observable errorMessage = '';
-    @observable headerStatus = 'Please wait...';
+    @observable headerStatus = 'Loading room...';
     @observable keyboardOpen = false;
     @observable kicked = false;
     @observable guessedWord = true;

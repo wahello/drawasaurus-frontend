@@ -18,6 +18,21 @@ button:focus {
   outline: 0;
 }
 
+.c-no-script {
+  background-color: darken($color-purple, 10%);
+  box-shadow: inset 0 2px 3px rgba(black, 0.1);
+  color: white;
+  font-family: "Roboto";
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px;
+  text-align: center;
+
+  @include tablet-desktop {
+    font-size: 14px;
+  }
+}
+
 .c-app {
   background-color: $background-body;
   background-image: url( '../images/bg.jpg' );

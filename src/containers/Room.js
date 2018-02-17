@@ -12,7 +12,7 @@ import RoomError from 'RoomError';
 import { BASE_CANVAS_WIDTH, BASE_CANVAS_HEIGHT } from 'CanvasStore';
 import { sndJoin, sndLeave, sndTimer, sndGuess, sndCorrect, sndTurn, sndGuessingOver } from 'api/Audio';
 import 'styles/Room.scss';
-import { USING_MOBILE, USING_IOS } from 'ChatInput';
+import { IS_SSR, USING_MOBILE, USING_IOS } from 'api/UserAgent';
 
 const MIN_CHAT_WIDTH = 120;
 const MIN_CHAT_HEIGHT = 150;
@@ -28,10 +28,11 @@ class Room extends Component {
     }
     
     @action componentWillMount() {
-        const { roomStore } = this.props.rootStore;
+        const { roomStore, uiStore } = this.props.rootStore;
         const { socket } = this.props;
 
         roomStore.roomName = this.props.match.params.name;
+        uiStore.connectingToRoom = true;
 
         socket.on( 'connect', this.onConnect );
         socket.on( 'disconnect', this.onDisconnect );
@@ -86,6 +87,8 @@ class Room extends Component {
     }
 
     @action onConnect = () => {
+        const { uiStore } = this.props.rootStore;
+        uiStore.connectingToRoom = false;
         this.addNotification( `Thanks for playing, please be polite to other players and avoid drawing words or letters!
             Share ___ROOM_LINK___ to invite people to your room.`, 'info-circled' );
     }
@@ -435,18 +438,20 @@ class Room extends Component {
         } );
         const boardClasses = classNames( {
             'l-board u-flex': true,
-            'u-hidden': this.firstResize
+            'u-hidden': this.firstResize || IS_SSR
         } );
         const sidebarClasses = classNames( {
             'l-sidebar u-flex-columns': true,
             'l-sidebar--no-users': roomStore.keyboardOpen
         } );
+        const spinnerClasses = classNames( {
+            'c-spinner c-spinner--room': true,
+            'u-hidden': !this.firstResize && !IS_SSR
+        } );
         return (
             <div className={mainClasses} ref={main => this.main = main}>
                 <RoomError />
-                {this.firstResize && 
-                    <div className="c-spinner c-spinner--room" />
-                }
+                <div className={spinnerClasses} />
                 <div className={boardClasses} style={{maxHeight: roomStore.boardMaxHeight}}>
                     <div className="l-canvas u-flex-columns">
                         <div ref={header => this.header = header} className="c-canvas-header u-no-select">

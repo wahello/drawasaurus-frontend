@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { action, reaction } from 'mobx';
-import mobileDetect from 'mobile-detect';
 import { initSounds } from 'api/Audio';
-
-export const USING_MOBILE = new mobileDetect( window.navigator.userAgent ).mobile();
-export const USING_IOS = !isNaN( new mobileDetect( window.navigator.userAgent ).version('iOS') );
+import { USING_MOBILE, USING_IOS } from 'api/UserAgent';
 
 @inject('rootStore','socket') @observer
 class ChatInput extends Component {

@@ -3,6 +3,7 @@ import { observable, action } from 'mobx';
 class UIStore {
     @observable connecting = true;
     @observable connectedToRoom = false;
+    @observable connectingToRoom = false;
     @observable requireLogin = false;
     @observable currentUsername = null;
     @observable onlinePlayers = 1;

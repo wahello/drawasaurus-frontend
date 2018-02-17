@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject } from 'mobx-react';
 import { action } from 'mobx';
-import { USING_IOS } from 'ChatInput';
+import { USING_IOS, IS_SSR } from 'api/UserAgent';
 
 @inject('rootStore')
 class Footer extends Component {
@@ -12,12 +12,8 @@ class Footer extends Component {
 
     @action componentDidMount() {
         const { roomStore } = this.props.rootStore;
-
-        ( window.adsbygoogle = window.adsbygoogle || [] ).push( {} );
         window.addEventListener( 'resize', this.resize );
-        if( this.state.adblocked === null ) {
-            setTimeout( this.checkAdblock, 3000 );
-        }
+        window.addEventListener( 'load', this.loadAds );
 
         if( USING_IOS && !roomStore.keyboardOpen ) {
             roomStore.forceRefresh = true;
@@ -26,14 +22,28 @@ class Footer extends Component {
 
     componentWillUnmount() {
         window.removeEventListener( 'resize', this.resize );
+        window.removeEventListener( 'load', this.loadAds );
+    }
+
+    @action loadAds = () => {
+        if( IS_SSR ) return;
+        const { roomStore } = this.props.rootStore;
+        try {
+            ( window.adsbygoogle = window.adsbygoogle || [] ).push( {} );
+            roomStore.forceRefresh = true;
+            setTimeout( this.checkAdblock, 500 );
+        } catch( err ) {
+            this.setState( { adblocked: true } );
+        }
     }
 
     @action checkAdblock = () => {
         if( this.ad === null ) return;
+        const { roomStore } = this.props.rootStore;
 
         if( this.ad.clientHeight === 0 ) {
             this.setState( { adblocked: true } );
-            this.props.rootStore.roomStore.forceRefresh = true;
+            roomStore.forceRefresh = true;
         } else {
             this.setState( { adblocked: false } );
         }

@@ -14,8 +14,10 @@ import { sndJoin, sndLeave, sndTimer, sndGuess, sndCorrect, sndTurn, sndGuessing
 import 'styles/Room.scss';
 import { IS_SSR, USING_MOBILE, USING_IOS } from 'api/UserAgent';
 
-const MIN_CHAT_WIDTH = 120;
 const MIN_CHAT_HEIGHT = 150;
+const MIN_CHAT_WIDTH = 150;
+const MIN_CHAT_WIDTH_TINY = 120;
+const MIN_CHAT_WIDTH_WITH_KEYBOARD = 100;
 
 @inject('rootStore','socket') @observer
 class Room extends Component {
@@ -393,9 +395,16 @@ class Room extends Component {
             let pct = BASE_CANVAS_WIDTH / BASE_CANVAS_HEIGHT;
             let newW = Math.round( h * pct );
 
-            if( newW + MIN_CHAT_WIDTH >= w ) {
+            let minChatWidth = MIN_CHAT_WIDTH;
+            if( roomStore.keyboardOpen ) {
+                minChatWidth = MIN_CHAT_WIDTH_WITH_KEYBOARD;
+            } else if( w <= 470 ) {
+                minChatWidth = MIN_CHAT_WIDTH_TINY;
+            }
+
+            if( newW + minChatWidth >= w ) {
                 pct = BASE_CANVAS_HEIGHT / BASE_CANVAS_WIDTH;
-                newW = w - MIN_CHAT_WIDTH;
+                newW = w - minChatWidth;
                 h = Math.round( newW * pct );
             } 
 

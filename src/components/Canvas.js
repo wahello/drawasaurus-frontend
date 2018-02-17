@@ -272,6 +272,7 @@ class Canvas extends Component {
         context.strokeStyle = pending.colour;
         //Scale line thickness with canvas size
         context.lineWidth = Math.round( pending.thick * multWidth );
+        context.lineWidth = Math.max( context.lineWidth, 2 );
         context.beginPath();
 
         let lines = pending.lines;

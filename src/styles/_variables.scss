@@ -16,7 +16,7 @@ $background-modal: rgba( $black, .75 );
 $background-canvas-controls: rgba( 245, 245, 245, .9 );
 
 $bbc1: lighten( $color-gray, 40% );
-$bbc2: rgba( $color-purple, .4 );
+$bbc2: rgba( $white, .4 );
 $background-behind-canvas: linear-gradient( $bbc1 30px, $bbc2 50%, $bbc1 100% );
 $background-behind-canvas-portrait: linear-gradient( to right, $bbc1 0, $bbc2 50%, $bbc1 100% );
 
@@ -87,6 +87,18 @@ $border-radius: 4px;
 
 @mixin min-width( $s ) {
   @media ( min-width: #{$s} ) {
+    @content;
+  }
+}
+
+@mixin max-height( $s ) {
+  @media ( max-height: #{$s} ) {
+    @content;
+  }
+}
+
+@mixin compact {
+  @media ( max-height: 350px ), ( max-width: 350px ) {
     @content;
   }
 }

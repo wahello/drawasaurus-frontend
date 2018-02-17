@@ -78,7 +78,7 @@ class App extends Component {
             <Header />
           }
           <noscript>
-            <div class="c-no-script">
+            <div className="c-no-script">
               Sorry, you need JavaScript enabled to play this game!
             </div>
           </noscript>

@@ -63,6 +63,10 @@
     font-size: 20px;
   }
 
+  @include compact {
+    font-size: 18px;
+  }
+
   &__home {
     color: $color-text-header;
     font-family: $font-logo;
@@ -87,6 +91,10 @@
     margin: 0;
     margin-top: -2px;
     opacity: .8;
+
+    @include compact {
+      font-size: 9px;
+    }
   }
 
   &__user {

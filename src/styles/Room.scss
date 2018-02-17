@@ -6,6 +6,7 @@
   flex: auto;
   overflow-x: hidden;
   overflow-y: hidden;
+  position: relative;
   padding: 5px;
 
   &.is-portrait {
@@ -156,6 +157,11 @@
   @include min-width( 1200px ) {
     font-size: 1.3em;
   }
+
+  @include compact {
+    font-size: 1.05em;
+    padding: .5em;
+  }
 }
 
 .u-blanks {
@@ -215,6 +221,10 @@
 
   @media ( max-height: 450px ) {
     font-size: 11px;
+  }
+
+  @include compact {
+    font-size: 10px;
   }
 
   //Converted these values to variables as they are used for absolute positioning below
@@ -316,6 +326,10 @@
     font-size: $label-size;
     letter-spacing: .05em;
     margin-top: $label-margin;
+
+    @include compact {
+      font-size: .9em;
+    }
   }
 
   &__icon {

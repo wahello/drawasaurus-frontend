@@ -4,11 +4,12 @@ module.exports = {
         'build/**/*.css',
         'build/static/media/*',
         'build/index.html',
-        'build/room/index.html'
+        'build/room/index.html',
+        'build/200.html'
     ],
     stripPrefix: 'build/',
     swFilePath: './build/service-worker.js',
-    navigateFallback: '/index.html',
+    navigateFallback: '/200.html',
     navigateFallbackWhitelist: [/^(?!.*[.]zip$).*$/],
     cacheId: 'drawasaurus-cache',
     runtimeCaching: [{

@@ -18,7 +18,6 @@ if( rootElement.hasChildNodes() ) {
       </Provider>
     </BrowserRouter>
   ), rootElement );
-  registerServiceWorker();
 } else {
   ReactDOM.render( (
     <BrowserRouter>
@@ -28,3 +27,4 @@ if( rootElement.hasChildNodes() ) {
     </BrowserRouter>
   ), rootElement );
 }
+registerServiceWorker();

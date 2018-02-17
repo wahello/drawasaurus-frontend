@@ -1,16 +1,32 @@
 {
   "short_name": "Drawasaurus",
   "name": "Drawasaurus",
+  "description": "Drawasaurus is a drawing & guessing game for your phone, tablet or PC. Do your best to draw the word you are given while players from around the world try to guess it!",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "144x144",
-      "type": "image/png"
+      "src": "logo_48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "logo_96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "logo_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": "/?utm_source=homescreen",
   "display": "standalone",
   "theme_color": "#9c27b0",
   "background_color": "#f7f7f7",
-  "orientation": "landscape"
+  ​​"orientation": "portrait"
 }

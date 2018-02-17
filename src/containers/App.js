@@ -39,9 +39,22 @@ class App extends Component {
         Cookies.set( 'session', id, { secure: secure } );
     });
 
+    window.addEventListener('beforeinstallprompt', this.showingHomescreenPrompt);
+
     if( IS_CRAWLER ) {
       uiStore.showModal( <LoginWindow /> );
     }
+  }
+
+  showingHomescreenPrompt = ( e ) => {
+    e.userChoice.then( function( choiceResult ) {
+      if( typeof window.gtag === 'function' ) {
+        window.gtag( 'event', choiceResult.outcome, { 
+          'event_category': 'engagement',
+          'event_label': 'Install Prompt Choice'
+        } );
+      }
+    } );
   }
   
   @action onConnect = () => {

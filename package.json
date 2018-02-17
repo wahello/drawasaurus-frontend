@@ -23,17 +23,21 @@
     "cross-env": "^5.1.3",
     "custom-react-scripts": "0.2.1",
     "mobx-react-devtools": "^4.2.15",
-    "react-snap": "^1.11.4"
+    "react-snap": "^1.11.4",
+    "sw-precache": "^5.2.1"
   },
   "reactSnap": {
     "skipThirdPartyRequests": true,
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"]
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "start-https": "cross-env HTTPS=true NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "build": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts build",
-    "postbuild": "react-snap",
+    "postbuild": "react-snap && sw-precache --root='build/' --config src/sw.js",
     "server": "node ./server/game",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

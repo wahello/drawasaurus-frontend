@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import RootStore from 'RootStore';
 import App from 'App';
+import registerServiceWorker from './registerServiceWorker';
 import 'normalize.css';
 import './styles/fa-drawasaurus.css';
 
@@ -17,6 +18,7 @@ if( rootElement.hasChildNodes() ) {
       </Provider>
     </BrowserRouter>
   ), rootElement );
+  registerServiceWorker();
 } else {
   ReactDOM.render( (
     <BrowserRouter>

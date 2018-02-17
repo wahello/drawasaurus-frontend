@@ -189,6 +189,7 @@
   box-shadow: inset 0 -2px 0 darken( $color-purple, 5% );
   color: $color-text-header;
   cursor: pointer;
+  font-family: 'Roboto Condensed';
   font-size: .4em;
   margin: .15em;
   padding: 0;
@@ -220,7 +221,7 @@
   }
 
   &__status {
-    font-size: .45em;
+    font-size: .5em;
     margin-top: -.2em;
     opacity: .8;
   }
@@ -235,7 +236,7 @@
   }
 
   &__playercount {
-    font-size: .8em;
+    font-size: .85em;
     margin-top: 2px;
     opacity: .8;
   }

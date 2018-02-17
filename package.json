@@ -26,7 +26,8 @@
     "react-snap": "^1.11.4"
   },
   "reactSnap": {
-    "skipThirdPartyRequests": true
+    "skipThirdPartyRequests": true,
+    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"]
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",

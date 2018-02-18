@@ -117,6 +117,10 @@ button:focus {
   display: none;
 }
 
+.u-no-interaction {
+  pointer-events: none;
+}
+
 .u-truncate {
   overflow: hidden;
   text-overflow: ellipsis;

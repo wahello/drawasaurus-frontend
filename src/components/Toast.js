@@ -27,7 +27,8 @@ class Toast extends Component {
     render() {
         const classes = classNames( {
             'c-toast u-flex-center-all': true,
-            'u-hidden': !this.state.update
+            'u-hidden': !this.state.update,
+            'u-no-interaction': !this.state.update
         } );
         return (
             <div className={classes}>

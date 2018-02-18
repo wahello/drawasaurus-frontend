@@ -14,6 +14,9 @@ module.exports = {
     cacheId: 'drawasaurus-cache',
     runtimeCaching: [{
         urlPattern: /^https:\/\/fonts\.googleapis\.com/,
-        handler: 'networkFirst'
+        handler: 'cacheFirst'
+    }, {
+        urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+        handler: 'cacheFirst'
     }]
 }

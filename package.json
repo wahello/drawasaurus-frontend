@@ -37,7 +37,7 @@
     "start": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "start-https": "cross-env HTTPS=true NODE_PATH=src:src/components:src/containers:src/stores react-scripts start",
     "build": "cross-env NODE_PATH=src:src/components:src/containers:src/stores react-scripts build",
-    "postbuild": "react-snap && sw-precache --root='build/' --config src/sw.js",
+    "postbuild": "react-snap && sw-precache --root='build/' --config src/sw.js && uglifyjs build/service-worker.js -o build/service-worker.js",
     "server": "node ./server/game",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

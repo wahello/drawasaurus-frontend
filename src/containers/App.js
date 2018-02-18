@@ -100,9 +100,7 @@ class App extends Component {
             <Route exact path='/room/' component={Room} />
             <Route path='*' component={Lobby} />
           </Switch>
-          {!roomStore.keyboardOpen &&
-            <Footer />
-          }
+          <Footer />
           {/* <DevTools /> */}
         </div>
       </Provider>

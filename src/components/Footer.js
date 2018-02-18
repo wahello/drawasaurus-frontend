@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { inject } from 'mobx-react';
 import { action } from 'mobx';
 import { USING_IOS, IS_SSR } from 'api/UserAgent';
+import classNames from 'classnames';
 
 @inject('rootStore')
 class Footer extends Component {
@@ -63,8 +64,13 @@ class Footer extends Component {
     }
 
     render() {
+        const { roomStore } = this.props.rootStore;
+        const classes = classNames( {
+            'c-footer': true,
+            'u-display-none': roomStore.keyboardOpen
+        } );
         return (
-            <footer className="c-footer">
+            <footer className={classes}>
                 { this.state.adblocked && 
                     <div className="c-footer__blocked u-flex-center-all">
                     <span className="c-footer__blocktext">

@@ -10,6 +10,7 @@ import Footer from 'Footer';
 import Lobby from 'Lobby';
 import Room from 'Room';
 import Modal from 'Modal';
+import Toast from 'Toast';
 import LoginWindow from 'modals/LoginWindow';
 import { IS_SSR, IS_CRAWLER } from 'api/UserAgent';
 import 'styles/App.scss';
@@ -101,6 +102,7 @@ class App extends Component {
             <Route path='*' component={Lobby} />
           </Switch>
           <Footer />
+          <Toast />
           {/* <DevTools /> */}
         </div>
       </Provider>

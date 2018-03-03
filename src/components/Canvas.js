@@ -164,7 +164,7 @@ class Canvas extends Component {
     //Fill canvas with a colour (optionally prevent deleting canvas array for redrawing)
     @action fillCanvas = ( colour, reset = true ) => {
         let { canvasStore } = this.props.rootStore;
-        let context = this.canvas.getContext( '2d' );
+        let context = this.canvas.getContext( '2d', { alpha: false } );
 
         canvasStore.fillColour = colour;
         context.fillStyle = colour;
@@ -265,7 +265,7 @@ class Canvas extends Component {
 
         const { canvasStore } = this.props.rootStore;
         const { multWidth, multHeight } = canvasStore;
-        let context = this.canvas.getContext( '2d' );
+        let context = this.canvas.getContext( '2d', { alpha: false } );
         
         context.lineJoin = 'round';
         context.lineCap = 'round';

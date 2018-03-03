@@ -32,8 +32,8 @@ class RoomList extends Component {
 
     render() {
         const { uiStore } = this.props.rootStore;
-        const openRooms = uiStore.lobbyRooms !== null ? uiStore.lobbyRooms.filter( room => room.c !== room.m ) : null;
-        const fullRooms = uiStore.lobbyRooms !== null ? uiStore.lobbyRooms.filter( room => room.c === room.m ) : null;
+        const openRooms = uiStore.lobbyRooms !== null ? uiStore.lobbyRooms.filter( room => room.c !== room.m ) : [];
+        const fullRooms = uiStore.lobbyRooms !== null ? uiStore.lobbyRooms.filter( room => room.c === room.m ) : [];
         return (
             <div className="c-lobby-rooms u-flex-columns u-flex-center-all u-no-select">
                 {( uiStore.connecting || uiStore.lobbyRooms === null ) &&
@@ -46,13 +46,13 @@ class RoomList extends Component {
                         and use the link to invite other players!
                     </span>
                 }
-                {openRooms !== null && openRooms.map( room => (
+                {openRooms.length > 0 && openRooms.map( room => (
                     <RoomButton loadRoom={this.loadRoom} key={room.n} name={room.n} status={room.s} currentPlayers={room.c} maxPlayers={room.m} />
                 ) )}
-                {( fullRooms !== null && openRooms !== null ) &&
+                {( fullRooms.length > 0 && openRooms.length > 0 ) &&
                     <span className="c-lobby-rooms__full-text">FULL ROOMS</span>
                 }
-                {fullRooms !== null && fullRooms.map( room => (
+                {fullRooms.length > 0 && fullRooms.map( room => (
                     <RoomButton loadRoom={this.loadRoom} key={room.n} name={room.n} status={room.s} currentPlayers={room.c} maxPlayers={room.m} full />
                 ) )}
             </div>

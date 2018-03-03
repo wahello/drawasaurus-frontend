@@ -33,7 +33,11 @@ class Room extends Component {
         const { roomStore, uiStore } = this.props.rootStore;
         const { socket } = this.props;
 
-        roomStore.roomName = this.props.match.params.name.replace(/\+/g, ' ');
+        if( this.props.match.params.name ) {
+            roomStore.roomName = this.props.match.params.name.replace(/\+/g, ' ');
+        } else {
+            roomStore.roomName = 'Drawasaurus';
+        }
         uiStore.connectingToRoom = true;
 
         socket.on( 'connect', this.onConnect );

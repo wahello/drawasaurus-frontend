@@ -7,7 +7,6 @@ module.exports = {
         'build/static/media/*.woff2',
         'build/200.html'
     ],
-    dontCacheBustUrlsMatching: /./,
     swFilePath: 'build/service-worker.js',
     stripPrefix: 'build/',
     navigateFallback: '/200.html',

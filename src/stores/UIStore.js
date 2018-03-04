@@ -12,9 +12,14 @@ class UIStore {
         visible: false,
         element: null
     }
+    @observable volume = 100;
 
     constructor( rootStore ) {
         this.rootStore = rootStore;
+        const savedVolume = localStorage.getItem( 'volume' );
+        if( savedVolume !== null ) {
+            this.volume = savedVolume;
+        }
     }
 
     @action showModal = ( element ) => {

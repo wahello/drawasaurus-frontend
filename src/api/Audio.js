@@ -93,10 +93,19 @@ let WebAudioAPISound = function( urls, options )
 	this.manager.addSound( this.url );
 };
 WebAudioAPISound.prototype = {
-	play: function( vol ) {
+	play: function( vol, force ) {
 		var buffer = this.manager.bufferList[ this.url ];
 		if( typeof buffer !== "undefined" )
 		{
+			if( typeof vol === 'undefined' ) {
+				vol = this.settings.volume;
+			}
+
+			let savedVolume = localStorage.getItem( 'volume' );
+			if( force !== true && savedVolume !== null ) {
+				vol *= ( savedVolume / 100 );
+			}
+
 			var source = this.makeSource( buffer, vol );
 			source.loop = this.settings.loop;
 			source.start( 0 );

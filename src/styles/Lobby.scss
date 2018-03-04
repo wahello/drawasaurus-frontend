@@ -177,6 +177,14 @@
     margin: 20px 10px;
     opacity: .55;
     text-align: center;
+
+    &--full {
+      border-bottom: 1px solid hsl( 0, 0, 95% );
+      margin: 0;
+      margin-bottom: .4em;
+      padding: .6em 0;
+      width: calc( 100% + 1em );
+    }
   }
 
   &__full-text {

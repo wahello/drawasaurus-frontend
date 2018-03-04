@@ -49,6 +49,13 @@ class RoomList extends Component {
                 {openRooms.length > 0 && openRooms.map( room => (
                     <RoomButton loadRoom={this.loadRoom} key={room.n} name={room.n} status={room.s} currentPlayers={room.c} maxPlayers={room.m} />
                 ) )}
+                {(openRooms.length === 0 && fullRooms.length > 0) &&
+                    <span className="c-lobby-rooms__none c-lobby-rooms__none--full">
+                        All rooms are currently full, wait for a
+                        <br />
+                        spot to open or create a new one above!
+                    </span>
+                }
                 {( fullRooms.length > 0 && openRooms.length > 0 ) &&
                     <span className="c-lobby-rooms__full-text">FULL ROOMS</span>
                 }

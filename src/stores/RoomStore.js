@@ -20,6 +20,8 @@ class RoomStore {
     @observable boardMaxHeight = "none";
     @observable forceRefresh = false;
 
+    chatMessageId = 0;
+
     constructor( rootStore ) {
         this.rootStore = rootStore;
     }
@@ -34,6 +36,15 @@ class RoomStore {
     
     @computed get usersHidden() {
         return this.userCount < 1 || this.keyboardOpen;
+    }
+
+    @action.bound addChatMessage( message ) {
+        message[3] = this.chatMessageId++;
+        this.messages.push( message );
+
+        if( this.messages.length > 50 ) {
+            this.messages.shift();
+        }
     }
 
     @action.bound resetUserBorders( drawer ) {

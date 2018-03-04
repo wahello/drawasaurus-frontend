@@ -109,16 +109,16 @@ class Room extends Component {
         roomStore.errorButtons = [ true, false, true ];
     }
 
-    @action addUserMessage = ( msg, name ) => {
+    addUserMessage = ( msg, name ) => {
         const { roomStore } = this.props.rootStore;
         let message = [ 0, name, msg ];
-        roomStore.messages.push( message );
+        roomStore.addChatMessage( message );
     }
 
-    @action addNotification = ( msg, icon ) => {
+    addNotification = ( msg, icon ) => {
         const { roomStore } = this.props.rootStore;
         let message = [ 1, msg, icon ];
-        roomStore.messages.push( message );
+        roomStore.addChatMessage( message );
     }
 
     @action startPracticeMode = () => {

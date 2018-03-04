@@ -44,7 +44,7 @@ class MessageList extends Component {
         const { messages } = this.props;
         return (
             <div className="c-chat__buffer u-flex-columns" ref={buffer => this.buffer = buffer}>
-                { messages.map( ( message, i ) => ( <Message key={i} message={message} /> ) ) }
+                { messages.map( ( message, i ) => ( <Message key={message[3]} message={message} /> ) ) }
             </div>
         );
     }

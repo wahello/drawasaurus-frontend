@@ -51,9 +51,9 @@ class RoomList extends Component {
                 ) )}
                 {(openRooms.length === 0 && fullRooms.length > 0) &&
                     <span className="c-lobby-rooms__none c-lobby-rooms__none--full">
-                        All rooms are currently full, wait for a
+                        All rooms are currently full, create a
                         <br />
-                        spot to open or create a new one above!
+                        new one above or wait for a spot to open!
                     </span>
                 }
                 {( fullRooms.length > 0 && openRooms.length > 0 ) &&

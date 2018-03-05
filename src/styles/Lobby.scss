@@ -171,19 +171,24 @@
 
   &__none {
     font-family: $font-buttons;
-    font-size: .22em;
-    letter-spacing: .03em;
+    // font-size: .22em;
+    // letter-spacing: .03em;
     line-height: 1.5;
     margin: 20px 10px;
     opacity: .55;
     text-align: center;
 
+    p {
+      font-size: .22em;
+      letter-spacing: .03em;
+    }
+
     &--full {
       border-bottom: 1px solid hsl( 0, 0, 95% );
       margin: 0;
-      margin-bottom: .4em;
-      padding: .6em 0;
-      width: calc( 100% + 1em );
+      margin-bottom: .1em;
+      padding: .2em 0;
+      width: 100%;
     }
   }
 
@@ -191,20 +196,23 @@
     border-top: 1px solid hsl( 0, 0, 95% );
     color: hsl( 0, 0, 77% );
     font-family: 'Roboto Condensed';
-    font-size: 12px;
-    letter-spacing: .05em;
     margin-bottom: .1em;
-    margin-top: .4em;
-    padding-top: .4em;
+    margin-top: .1em;
+    padding-top: .1em;
     text-align: center;
-    width: calc( 100% + 1em );
+    width: 100%;
 
-    @include small-phone {
-      font-size: 11px;
-    }
+    p {
+      font-size: 12px;
+      letter-spacing: .08em;
 
-    @include tablet-desktop {
-      font-size: 13px;
+      @include small-phone {
+        font-size: 11px;
+      }
+  
+      @include tablet-desktop {
+        font-size: 13px;
+      }
     }
   }
 }

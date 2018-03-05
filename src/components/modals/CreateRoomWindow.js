@@ -31,10 +31,9 @@ class CreateRoomWindow extends Component {
         const { socket } = this.props;
 
         let name = this.roomName.trim();
-        if ( name !== '' ) {
-            socket.emit( 'createNewRoom', name, this.maxPlayers );
-            uiStore.closeModal();
-        }
+        name = name !== '' ? name : '1';
+        socket.emit( 'createNewRoom', name, this.maxPlayers );
+        uiStore.closeModal();
     }
 
     render() {

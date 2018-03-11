@@ -65,7 +65,7 @@ class ChatInput extends Component {
                 <input
                     ref={input => this.input = input}
                     className="c-chat__input"
-                    placeholder={this.state.showPlaceholder ? 'Chat or guess' : ''}
+                    placeholder={this.state.showPlaceholder ? 'Guess and chat here' : ''}
                     maxLength="150"
                     autoComplete="off"
                     type="text"

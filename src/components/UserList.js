@@ -24,9 +24,10 @@ class User extends Component {
 @inject('rootStore') @observer
 class UserList extends Component {
     render() {
-        const { roomStore } = this.props.rootStore;
+        const { roomStore, canvasStore } = this.props.rootStore;
+        const userStyles = canvasStore.landscape ? { marginTop: canvasStore.headerHeight } : {};
         return (
-            <div className="c-users u-flex-columns">
+            <div className="c-users u-flex-columns" style={userStyles}>
                 <div className="c-users__header u-flex">
                     <span>PLAYER LIST</span>
                     <span className="c-users__playercount">{roomStore.users.size}/{roomStore.roomMaxPlayers}</span>

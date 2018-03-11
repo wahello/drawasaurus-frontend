@@ -631,13 +631,13 @@ $s: 2em;
     opacity: .8;
     letter-spacing: .1em;
     margin-left: auto;
-    padding-left: 5px;
+    padding-left: 10px;
   }
 
   &__header {
     background-color: darken($white, 5%);
     border-right: 1px solid $color-border;
-    border-bottom: 1px solid rgba(black, .025);
+    border-bottom: 1px solid rgba(black, .01);
     border-top: 1px solid $color-border;
     border-top-right-radius: 4px;
     color: rgba($black, .25);
@@ -662,7 +662,7 @@ $s: 2em;
     padding: .7em;
     transition: border .2s, color .2s, background-color .2s;
 
-    &:nth-of-type(2) {
+    &:first-of-type {
       border-top: 1px solid $color-border;
     }
 
@@ -679,16 +679,12 @@ $s: 2em;
     &--drawing {
       background-color: rgba( $color-purple, .85 );
       border-right: 1px solid rgba( $color-purple, .6 );
-      border-bottom: 0 !important;
-      border-top: 0 !important;
       color: $white;
     }
 
     &--guessed {
       background-color: rgba( $color-green, .85 );
       border-right: 1px solid rgba( $color-green, .6 );
-      border-bottom: 0 !important;
-      border-top: 0 !important;
       color: $white;
     }
 
@@ -697,15 +693,11 @@ $s: 2em;
 
       &.c-users__user--drawing {
         background-color: rgba( $color-purple, .95 );
-        border-bottom: 0 !important;
-        border-top: 0 !important;
         color: $white;
       }
 
       &.c-users__user--guessed {
         background-color: rgba( $color-green, .95 );
-        border-bottom: 0 !important;
-        border-top: 0 !important;
         color: $white;
       }
     }

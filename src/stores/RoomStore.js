@@ -12,6 +12,7 @@ class RoomStore {
     @observable guessedWord = true;
     @observable messages = [];
     @observable roomName = null;
+    @observable roomMaxPlayers = 8;
     @observable roomStatus = 'Connecting to room...';
     @observable timeAFK = 0;
     @observable users = new Map();

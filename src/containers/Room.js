@@ -184,9 +184,12 @@ class Room extends Component {
         socket.emit( 'joinRoom', roomStore.roomName );
     }
 
-    @action joinedRoom = ( roomName ) => {
+    @action joinedRoom = ( roomName, maxPlayers ) => {
         const { uiStore, roomStore } = this.props.rootStore;
         roomStore.roomName = roomName;
+        if( maxPlayers !== undefined && maxPlayers !== null) {
+            roomStore.roomMaxPlayers = maxPlayers;
+        }
         uiStore.connectedToRoom = true;
     }
 

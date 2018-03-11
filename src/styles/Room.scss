@@ -29,6 +29,7 @@
       border: 1px solid $color-border;
       border-radius: 0 0 $border-radius $border-radius;
       border-top: 0;
+      height: 100%;
       margin: 0;
       margin-left: 5px;
       max-width: none;
@@ -42,9 +43,16 @@
       align-items: stretch;
       flex-flow: column nowrap;
       justify-content: flex-start;
-      max-height: none;
+      margin: 0;
+      margin-right: 5px;
+      max-height: calc( 100% - 5px );
       max-width: 42%;
       min-width: 100px;
+
+      &__header {
+        border-radius: 0;
+        border-top: 0;
+      }
 
       &__user {
         flex: none;
@@ -140,12 +148,13 @@
 }
 
 .c-canvas-header {
-  background: $color-purple;
+  background: darken( $color-purple, 2% );
   border-radius: $border-radius $border-radius 0 0;
   box-sizing: border-box;
   color: $white;
   font-size: 1.1em;
   font-weight: 300;
+  letter-spacing: .01em;
   padding: .6em;
   text-align: center;
   width: 100%;
@@ -449,7 +458,7 @@ $s: 2em;
 
 .l-sidebar {
   flex-grow: 1;
-  max-width: 220px;
+  max-width: 170px;
   width: 100%;
 
   &--no-users {
@@ -478,22 +487,22 @@ $s: 2em;
     flex-grow: 1;
     height: 0;
     overflow-y: auto;
+    overflow-y: overlay;
+    padding-bottom: 1px;
     word-wrap: break-word;
 
     &::-webkit-scrollbar {
       background-color: rgba( $color-purple, .1 );
-      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      border-left: 1px solid rgba(12, 1, 1, 0.05);
       width: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: rgba( $color-purple, .2 );
-      border-radius: 4px;
+      background-color: rgba( $color-purple, .15 );
     }
   }
 
   &__box {
-    border-top: 1px solid $color-border;
     padding: 5px;
   }
 
@@ -588,32 +597,79 @@ $s: 2em;
 }
 
 .c-users {
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 1px 0 rgba( $color-border, .3 );
   box-sizing: border-box;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  max-height: 50%;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: .3em;
+  flex-shrink: 1;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  max-height: 45%;
 
   @include small-phone {
     font-size: .95em;
   }
 
+  &__list {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-y: overlay;
+
+    &::-webkit-scrollbar {
+      background-color: rgba( $color-purple, .1 );
+      border-left: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom-right-radius: 2px;
+      width: 4px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba( $color-purple, .15 );
+    }
+  }
+
+  &__playercount {
+    opacity: .8;
+    letter-spacing: .1em;
+    margin-left: auto;
+    padding-left: 5px;
+  }
+
+  &__header {
+    background-color: darken($white, 5%);
+    border-right: 1px solid $color-border;
+    border-bottom: 1px solid rgba(black, .025);
+    border-top: 1px solid $color-border;
+    border-top-right-radius: 4px;
+    color: rgba($black, .25);
+    flex-shrink: 0;
+    font-family: "Roboto";
+    font-weight: 700;
+    font-size: .8em;
+    letter-spacing: .04em;
+    padding: .65em .7em;
+
+  }
+
   &__user {
     align-items: baseline;
     background-color: $white;
-    border: 1px solid $color-border;
-    border-radius: $border-radius;
-    box-shadow: 0 1px 0 rgba( $color-border, .3 );
+    border-bottom: 1px solid rgba($black, .05);
+    border-right: 1px solid $color-border;
     box-sizing: border-box;
     color: $color-text-light;
-    flex: 1 0 35%;
-    letter-spacing: .02em;
-    margin: .25em .2em;
-    padding: .6em .7em;
+    flex-shrink: 0;
+    letter-spacing: .01em;
+    padding: .7em;
     transition: border .2s, color .2s, background-color .2s;
+
+    &:nth-of-type(2) {
+      border-top: 1px solid $color-border;
+    }
+
+    &:last-of-type {
+      border-bottom: 1px solid $color-border;
+      border-bottom-right-radius: 4px;
+    }
 
     &--drawing,
     &--guessed {
@@ -622,29 +678,34 @@ $s: 2em;
 
     &--drawing {
       background-color: rgba( $color-purple, .85 );
-      border: 1px solid rgba( $color-purple, .6 );
+      border-right: 1px solid rgba( $color-purple, .6 );
+      border-bottom: 0 !important;
+      border-top: 0 !important;
       color: $white;
     }
 
     &--guessed {
       background-color: rgba( $color-green, .85 );
-      border: 1px solid rgba( $color-green, .6 );
+      border-right: 1px solid rgba( $color-green, .6 );
+      border-bottom: 0 !important;
+      border-top: 0 !important;
       color: $white;
     }
 
     &--me {
-      border: 1px solid darken( $color-border, 8% );
       color: darken( $color-text-light, 5% );
 
       &.c-users__user--drawing {
         background-color: rgba( $color-purple, .95 );
-        border: 1px solid darken( $color-purple, 2% );
+        border-bottom: 0 !important;
+        border-top: 0 !important;
         color: $white;
       }
 
       &.c-users__user--guessed {
         background-color: rgba( $color-green, .95 );
-        border: 1px solid darken( $color-green, 4% );
+        border-bottom: 0 !important;
+        border-top: 0 !important;
         color: $white;
       }
     }

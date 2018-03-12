@@ -32,7 +32,7 @@ class Toast extends Component {
         } );
         return (
             <div className={classes}>
-                A new version of Drawasaurus is available!
+                An update for Drawasaurus is ready!
                 <a className="c-toast__refresh" href="">REFRESH</a>
             </div>
         );

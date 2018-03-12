@@ -703,7 +703,12 @@ $s: 2em;
     }
 
     &--me {
-      color: darken( #505050, 5% );
+      background-color: darken( $white, 1% );
+      color: darken( #757575, 30% );
+
+      .c-users__score {
+        opacity: .9;
+      }
 
       &.c-users__user--drawing {
         background-color: rgba( $color-purple, .95 );

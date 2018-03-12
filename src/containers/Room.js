@@ -460,6 +460,7 @@ class Room extends Component {
             'l-sidebar u-flex-columns': true,
             'l-sidebar--no-users': roomStore.keyboardOpen
         } );
+        const sidebarStyles = canvasStore.landscape ? {  maxWidth: Math.min( 170, window.innerWidth - canvasStore.canvasWidth - 12 ) } : {};
         const spinnerClasses = classNames( {
             'c-spinner c-spinner--room': true,
             'u-hidden': !this.firstResize && !IS_SSR
@@ -480,7 +481,7 @@ class Room extends Component {
                             <Canvas />
                         </div>
                     </div>
-                    <div className={sidebarClasses}>
+                    <div className={sidebarClasses} style={sidebarStyles}>
                         {!roomStore.usersHidden &&
                             <UserList />
                         }

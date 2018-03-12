@@ -50,7 +50,7 @@
       margin: 0;
       margin-right: 2px;
       max-height: calc( 100% - 5px );
-      max-width: 42%;
+      max-width: 46%;
       min-width: 100px;
 
       &__header {
@@ -659,6 +659,9 @@ $s: 2em;
     letter-spacing: .05em;
     padding: .6em;
 
+    @include max-width(470px) {
+      font-size: .8em;
+    }
   }
 
   &__user {
@@ -722,7 +725,7 @@ $s: 2em;
 
   &__name {
     flex: 1 0;
-    padding-right: 10px;
+    padding-right: 5px;
   }
 
   &__score {

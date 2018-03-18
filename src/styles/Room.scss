@@ -649,15 +649,15 @@ $s: 2em;
 
   &__header {
     align-items: center;
-    background-color: #40b145;
+    background-color: darken( $color-purple, 2% );
     border-top-right-radius: 4px;
     color: $white;
     flex-shrink: 0;
     font-family: "Roboto";
     font-weight: 700;
-    font-size: .85em;
+    font-size: .95em;
     letter-spacing: .05em;
-    padding: .6em;
+    padding: .65em;
 
     @include max-width(470px) {
       font-size: .8em;

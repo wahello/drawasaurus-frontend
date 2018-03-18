@@ -29,7 +29,7 @@ class UserList extends Component {
         return (
             <div className="c-users u-flex-columns" style={userStyles}>
                 <div className="c-users__header u-flex">
-                    <span>PLAYER LIST</span>
+                    <span>PLAYERS</span>
                     <span className="c-users__playercount">{roomStore.users.size}/{roomStore.roomMaxPlayers}</span>
                 </div>
                 <div className="c-users__list u-flex-columns">

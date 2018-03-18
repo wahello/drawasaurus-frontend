@@ -20,6 +20,7 @@ class RoomStore {
     @observable lowestHeight = null;
     @observable boardMaxHeight = "none";
     @observable forceRefresh = false;
+    @observable forceShowUsers = false;
 
     chatMessageId = 0;
 

@@ -466,7 +466,7 @@ $s: 2em;
   width: 100%;
 
   &--no-users {
-    font-size: .8em;
+    font-size: .9em;
     max-width: 130px;
   }
 }
@@ -478,10 +478,6 @@ $s: 2em;
   border-radius: 0 $border-radius $border-radius 0;
   flex: 1 1;
   margin-bottom: 2px;
-
-  @include small-phone {
-    font-size: .9em;
-  }
 
   &--no-users {
     margin-top: 2px;
@@ -608,6 +604,7 @@ $s: 2em;
 }
 
 .c-users {
+  $s: &;
   border-bottom-right-radius: 4px;
   box-sizing: border-box;
   flex-shrink: 1;
@@ -617,6 +614,16 @@ $s: 2em;
 
   @include small-phone {
     font-size: .95em;
+  }
+
+  &--minimised {
+    border-bottom-left-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 4px;
+    max-height: calc( 100% - 50px );
   }
 
   &__list {
@@ -637,6 +644,11 @@ $s: 2em;
     &::-webkit-scrollbar-thumb {
       background-color: rgba( $color-purple, .15 );
     }
+
+    #{$s}--minimised & {
+      border-bottom-left-radius: 4px;
+      margin-top: -2px;
+    }
   }
 
   &__playercount {
@@ -645,10 +657,15 @@ $s: 2em;
     opacity: .9;
     margin-left: auto;
     padding-left: 10px;
+
+    #{$s}--minimised & {
+        padding-left: 5px;
+    }
   }
 
   &__header {
     align-items: center;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.15);
     background-color: darken( $color-purple, 2% );
     border-top-right-radius: 4px;
     color: $white;
@@ -658,9 +675,25 @@ $s: 2em;
     font-size: .95em;
     letter-spacing: .05em;
     padding: .65em;
+    z-index: 2;
 
     @include max-width(470px) {
       font-size: .8em;
+
+      #{$s}--minimised & {
+        font-size: .9em;
+      }
+    }
+
+    #{$s}--minimised & {
+      border-bottom-left-radius: 4px;
+      border-radius: 4px;
+      padding: .75em .65em;
+      transition: .1s border-radius;
+    }
+
+    #{$s}--maximised & {
+      border-radius: 4px 4px 2px 2px;
     }
   }
 
@@ -675,10 +708,22 @@ $s: 2em;
     letter-spacing: .03em;
     padding: .6em;
     transition: border-right .3s, color .3s, background-color .3s;
+    
+    #{$s}--minimised & {
+      border-left: 1px solid $color-border;
+
+      &:first-of-type {
+        padding-top: calc( .6em + 2px );
+      }
+    }
 
     &:last-of-type {
       border-bottom: none;
       border-bottom-right-radius: 4px;
+
+      #{$s}--minimised & {
+        border-bottom-left-radius: 4px;
+      }
     }
 
     &--drawing,
@@ -695,12 +740,20 @@ $s: 2em;
       background-color: rgba( $color-purple, .85 );
       border-right: 1px solid rgba( $color-purple, .6 );
       color: $white;
+      
+      #{$s}--minimised & {
+        border-left: 1px solid rgba( $color-purple, .6 );
+      }
     }
 
     &--guessed {
       background-color: rgba( $color-green, .85 );
       border-right: 1px solid rgba( $color-green, .6 );
       color: $white;
+
+      #{$s}--minimised & {
+        border-left: 1px solid rgba( $color-green, .6 );
+      }
     }
 
     &--me {

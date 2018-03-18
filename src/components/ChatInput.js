@@ -31,6 +31,9 @@ class ChatInput extends Component {
         
         if( USING_MOBILE ) {
             roomStore.keyboardOpen = bool;
+            if( bool ) {
+                roomStore.forceShowUsers = false;
+            }
         }
 
         if( !bool ) {

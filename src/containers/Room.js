@@ -482,9 +482,7 @@ class Room extends Component {
                         </div>
                     </div>
                     <div className={sidebarClasses} style={sidebarStyles}>
-                        {!roomStore.usersHidden &&
-                            <UserList />
-                        }
+                        <UserList />
                         <Chat />
                     </div>
                 </div>

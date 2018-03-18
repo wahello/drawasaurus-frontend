@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { action } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import classNames from 'classnames';
 
@@ -23,22 +24,49 @@ class User extends Component {
 
 @inject('rootStore') @observer
 class UserList extends Component {
+    @action clickUsers = ( e ) => {
+        e.preventDefault();
+        const { roomStore } = this.props.rootStore;
+
+        if( roomStore.keyboardOpen ) {
+            roomStore.forceShowUsers = !roomStore.forceShowUsers;
+        }
+    }
+
     render() {
         const { roomStore, canvasStore } = this.props.rootStore;
-        const userStyles = canvasStore.landscape ? { marginTop: canvasStore.headerHeight } : {};
+        const playerCount = roomStore.usersHidden ? roomStore.users.size : `${roomStore.users.size}/${roomStore.roomMaxPlayers}`; 
+        const showUsers = !roomStore.usersHidden || roomStore.forceShowUsers;
+
+
+        const containerClasses = classNames( {
+            'c-users u-flex-columns': true,
+            'c-users--minimised': roomStore.usersHidden,
+            'c-users--maximised': roomStore.usersHidden && roomStore.forceShowUsers
+        } );
+        const headerClasses = classNames( {
+            'c-users__header u-flex': true
+        } );
+
+        const userStyles = {
+            marginTop: ( canvasStore.landscape && !roomStore.keyboardOpen ) ? canvasStore.headerHeight : null
+        };
+        
         return (
-            <div className="c-users u-flex-columns" style={userStyles}>
-                <div className="c-users__header u-flex">
+            <div className={containerClasses} style={userStyles} onMouseDown={this.clickUsers}>
+                <div className={headerClasses}>
                     <span>PLAYERS</span>
-                    <span className="c-users__playercount">{roomStore.users.size}/{roomStore.roomMaxPlayers}</span>
+                    <span className="c-users__playercount">{playerCount}</span>
                 </div>
-                <div className="c-users__list u-flex-columns">
-                {
-                    roomStore.users.values().map( user => (
-                        <User key={user.id} user={user} />
-                    ) )
+                { showUsers && 
+                    <div className="c-users__list u-flex-columns">
+                    {
+                        roomStore.users.values().map( user => (
+                            <User key={user.id} user={user} />
+                        ) )
+                    }
+                    </div>
                 }
-                </div>
             </div>
         );
     }

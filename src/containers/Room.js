@@ -17,7 +17,7 @@ import { IS_SSR, USING_MOBILE, USING_IOS } from 'api/UserAgent';
 const MIN_CHAT_HEIGHT = 150;
 const MIN_CHAT_WIDTH = 150;
 const MIN_CHAT_WIDTH_TINY = 120;
-const MIN_CHAT_WIDTH_WITH_KEYBOARD = 100;
+const MIN_CHAT_WIDTH_WITH_KEYBOARD = 110;
 
 @inject('rootStore','socket') @observer
 class Room extends Component {
@@ -446,8 +446,19 @@ class Room extends Component {
         this.firstResize = false;
     }
 
+    @action toggleUsers = ( e ) => {
+        e.preventDefault();
+        const { roomStore } = this.props.rootStore;
+
+        if( roomStore.keyboardOpen ) {
+            roomStore.forceShowUsers = !roomStore.forceShowUsers;
+        }
+    }
+
     render() {
-        const { roomStore, canvasStore } = this.props.rootStore;        
+        const { roomStore, canvasStore } = this.props.rootStore;     
+        const buttonText = roomStore.forceShowUsers ? 'HIDE PLAYERS' : 'SHOW PLAYERS';
+
         const mainClasses = classNames( {
             'l-room u-flex': true,
             'is-portrait': !canvasStore.landscape
@@ -460,11 +471,13 @@ class Room extends Component {
             'l-sidebar u-flex-columns': true,
             'l-sidebar--no-users': roomStore.keyboardOpen
         } );
-        const sidebarStyles = canvasStore.landscape ? {  maxWidth: Math.min( 170, window.innerWidth - canvasStore.canvasWidth - 12 ) } : {};
         const spinnerClasses = classNames( {
             'c-spinner c-spinner--room': true,
             'u-hidden': !this.firstResize && !IS_SSR
         } );
+
+        const sidebarStyles = canvasStore.landscape ? {  maxWidth: Math.min( 170, window.innerWidth - canvasStore.canvasWidth - 12 ) } : {};
+    
         return (
             <div className={mainClasses} ref={main => this.main = main}>
                 <RoomError />
@@ -484,6 +497,9 @@ class Room extends Component {
                     <div className={sidebarClasses} style={sidebarStyles}>
                         <UserList />
                         <Chat />
+                        {roomStore.usersHidden && 
+                            <div className="c-users__toggle" onMouseDown={this.toggleUsers}>{buttonText}</div>
+                        }
                     </div>
                 </div>
                 <AFKTimer room />

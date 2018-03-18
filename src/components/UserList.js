@@ -35,9 +35,10 @@ class UserList extends Component {
 
     render() {
         const { roomStore, canvasStore } = this.props.rootStore;
-        const playerCount = roomStore.usersHidden ? roomStore.users.size : `${roomStore.users.size}/${roomStore.roomMaxPlayers}`; 
         const showUsers = !roomStore.usersHidden || roomStore.forceShowUsers;
-
+        const showGuesses = roomStore.usersGuessed > 0 && !showUsers;
+        const headerText = showGuesses ? `${roomStore.usersGuessed}/${roomStore.users.size-1} GUESSED` : 'PLAYERS';
+        const playercountText = `${roomStore.users.size}/${roomStore.roomMaxPlayers}`; 
 
         const containerClasses = classNames( {
             'c-users u-flex-columns': true,
@@ -45,7 +46,12 @@ class UserList extends Component {
             'c-users--maximised': roomStore.usersHidden && roomStore.forceShowUsers
         } );
         const headerClasses = classNames( {
-            'c-users__header u-flex': true
+            'c-users__header u-flex': true,
+            'c-users__header--guesses': showGuesses 
+        } );
+        const playercountClasses = classNames( {
+            "c-users__playercount": true,
+            'u-display-none': showGuesses
         } );
 
         const userStyles = {
@@ -55,8 +61,8 @@ class UserList extends Component {
         return (
             <div className={containerClasses} style={userStyles} onMouseDown={this.clickUsers}>
                 <div className={headerClasses}>
-                    <span>PLAYERS</span>
-                    <span className="c-users__playercount">{playerCount}</span>
+                    <span className="c-users__headertitle">{headerText}</span>
+                    <span className={playercountClasses}>{playercountText}</span>
                 </div>
                 { showUsers && 
                     <div className="c-users__list u-flex-columns">

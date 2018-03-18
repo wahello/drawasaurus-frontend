@@ -40,6 +40,11 @@ class RoomStore {
         return this.userCount < 1 || this.keyboardOpen;
     }
 
+    @computed get usersGuessed() {
+        const guessed = Array.from( this.users.values() ).filter( user => user.isDrawing === 2 );
+        return guessed.length;
+    }
+
     @action.bound addChatMessage( message ) {
         message[3] = this.chatMessageId++;
         this.messages.push( message );

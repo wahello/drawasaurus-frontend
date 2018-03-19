@@ -617,7 +617,7 @@ $s: 2em;
     border-bottom-left-radius: 4px;
     cursor: pointer;
     margin-bottom: 0;
-    max-height: calc( 100% - 50px - 30px );
+    max-height: calc( 100% - 50px - 40px );
   }
 
   &--maximised {
@@ -711,6 +711,10 @@ $s: 2em;
     }
   }
 
+  &__togglewrapper {
+    cursor: pointer;
+  }
+
   &__toggle {
     background-color: darken( $color-purple, 2% );
     border-radius: 4px;
@@ -721,9 +725,7 @@ $s: 2em;
     font-size: .8em;
     letter-spacing: .05em;
     margin: 4px;
-    margin-bottom: 3px;
-    margin-top: 2px;
-    padding: calc( .65em + 2px ) .65em;
+    padding: calc( .65em + 4px ) .65em;
     text-align: center;
   }
 

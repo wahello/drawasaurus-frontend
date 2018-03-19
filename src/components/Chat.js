@@ -54,12 +54,16 @@ class MessageList extends Component {
 class Chat extends Component {
     render() {
         const { roomStore } = this.props.rootStore;
-        const c = classNames( {
+
+        const chatClasses = classNames( {
             'c-chat u-flex-columns': true,
             'c-chat--no-users': roomStore.usersHidden
         } );
+
+        const chatStyles = { marginBottom: roomStore.usersHidden ? 0 : null };
+
         return (
-            <div className={c}>
+            <div className={chatClasses} style={chatStyles}>
                 <MessageList messages={roomStore.messages} />
                 <ChatInput />
             </div>

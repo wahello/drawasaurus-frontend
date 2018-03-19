@@ -498,7 +498,9 @@ class Room extends Component {
                         <UserList />
                         <Chat />
                         {roomStore.usersHidden && 
-                            <div className="c-users__toggle" onMouseDown={this.toggleUsers}>{buttonText}</div>
+                            <div className="c-users__togglewrapper" onMouseDown={this.toggleUsers}>
+                                <div className="c-users__toggle">{buttonText}</div>
+                            </div>
                         }
                     </div>
                 </div>

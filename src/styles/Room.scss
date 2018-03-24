@@ -617,7 +617,11 @@ $s: 2em;
     border-bottom-left-radius: 4px;
     cursor: pointer;
     margin-bottom: 0;
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
     max-height: calc( 100% - 50px - 40px );
+    transition: margin .2s;
   }
 
   &--maximised {
@@ -665,6 +669,7 @@ $s: 2em;
     align-items: center;
     background-color: darken( $color-purple, 2% );
     border-top-right-radius: 4px;
+    box-shadow: 0 2px 0 rgba(black, .05);
     color: $white;
     flex-shrink: 0;
     font-family: "Roboto";
@@ -672,6 +677,7 @@ $s: 2em;
     font-size: .9em;
     letter-spacing: .05em;
     padding: .65em;
+    transition: border-radius .2s, background-color .2s;
     z-index: 2;
 
     @include max-width(470px) {
@@ -683,25 +689,23 @@ $s: 2em;
     }
 
     &--guesses {
+      background-color: darken( $color-green, 2% );
       justify-content: center;
       text-align: center;
     }
 
     #{$s}--minimised & {
-      background-color: darken( $color-green, 2% );
-      box-shadow: 0 4px 0 darken( $color-green, 2% ), inset -2px 0 0 darken( $color-green, 4% );
+      border-radius: 2px;
+      box-shadow: none;
       padding: calc( .5em + 2px ) .5em;
       justify-content: center;
-      transition: .1s border-radius;
     }
 
     #{$s}--maximised & {
-      background-color: darken( $color-purple, 2% );
       box-shadow: none;
       border-radius: 4px 4px 2px 2px;
-      justify-content: flex-start;
+      margin: 0;
       padding: calc( .65em + 2px ) .65em;
-      text-align: left;
     }
   }
 

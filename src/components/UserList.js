@@ -36,9 +36,9 @@ class UserList extends Component {
     render() {
         const { roomStore, canvasStore } = this.props.rootStore;
         const showUsers = !roomStore.usersHidden || roomStore.forceShowUsers;
-        const showGuesses = roomStore.usersGuessed > 0 && !showUsers;
+        const showGuesses = roomStore.usersGuessed > 0;
         const headerText = showGuesses ? `${roomStore.usersGuessed}/${roomStore.users.size-1} GUESSED` : 'PLAYERS';
-        const playercountText = `${roomStore.users.size}/${roomStore.roomMaxPlayers}`; 
+        const playercountText = roomStore.usersHidden ? roomStore.users.size : `${roomStore.users.size}/${roomStore.roomMaxPlayers}`;
 
         const containerClasses = classNames( {
             'c-users u-flex-columns': true,
